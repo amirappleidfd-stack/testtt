@@ -1391,7 +1391,7 @@ async function copySubLink(uid){try{const domain=location.host;const subUrl=`htt
 async function changePassword(){const cur=$('#cur-pw').value;const nw=$('#new-pw').value;if(!cur||!nw){toast('Fill all fields',true);return;}try{const r=await fetch('/api/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({current_password:cur,new_password:nw})});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.detail||'Error');}toast('Updated');$('#cur-pw').value='';$('#new-pw').value='';}catch(e){toast(e.message,true)}}
 
 applyTheme(theme);setLang(lang);
-loadStats();loadLinks();loadAddresses();loadDomain();
+loadStats();loadLinks();loadDomain();
 setInterval(()=>{loadStats()},10000);
 
 
