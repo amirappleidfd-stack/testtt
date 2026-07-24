@@ -475,6 +475,32 @@ async def subscription_download(uid: str):
     }
     return Response(content=encoded, headers=headers)
 
+@app.get("/api/sub/{uid}/info")
+async def public_subscription_info(uid: str):
+    """Public subscription info for the /sub/{uid} page (no login required).
+
+    The subscription page is linked from client apps without a session cookie,
+    so it cannot rely on the authenticated /api/links/{uid}/sub endpoint.
+    This mirrors the fields the sub page actually renders (expiry, usage,
+    active state, connection counts, config link).
+    """
+    async with LINKS_LOCK:
+        link = LINKS.get(uid)
+        if link is None:
+            raise HTTPException(status_code=404, detail="link not found")
+    vless_link = generate_vless_link(uid, remark=f"AMIR VPN-{link['label']}")
+    return {
+        "label": link["label"],
+        "expiry": link.get("expiry", ""),
+        "expired": is_expired(link),
+        "used_bytes": link["used_bytes"],
+        "limit_bytes": link["limit_bytes"],
+        "active": link["active"],
+        "current_connections": count_connections_for_link(uid),
+        "max_connections": link.get("max_connections", 0),
+        "vless_link": vless_link,
+    }
+
 RELAY_BUF = 64 * 1024
 
 async def parse_vless_header(first_chunk: bytes):
@@ -1626,8 +1652,7 @@ body::before{content:'';position:fixed;inset:-20%;z-index:-1;background:radial-g
 <script>
 let lang = localStorage.getItem('amir_lang') || 'en';
 let theme = localStorage.getItem('amir_theme') || 'light';
-let statsData = {};
-const SUB_UID = window.location.pathname.split('/')[3] || 'test';
+const SUB_UID = window.location.pathname.split('/').filter(Boolean).pop() || 'test';
 
 function setLang(l) {
   lang = l;
@@ -1851,27 +1876,14 @@ function getPrimaryColor() {
 }
 
 async function loadSubData() {
-  showToast('Loading subscription...', false);
   try {
-    const [subRes, domainRes, statsRes] = await Promise.all([
-      fetch(`/api/links/${SUB_UID}/sub`),
-      fetch('/api/domain'),
-      fetch('/stats')
-    ]);
-    
+    const subRes = await fetch(`/api/sub/${SUB_UID}/info`);
     if (!subRes.ok) throw new Error('Subscription not found');
-    
     const subData = await subRes.json();
-    const domainData = await domainRes.json();
-    statsData = await statsRes.json();
-    
-    updateSubscriptionUI(subData, domainData);
+    updateSubscriptionUI(subData, {});
     updateCountdown(subData.expiry);
     updateConnectedUsers(subData.current_connections, subData.max_connections);
-    
-    showToast('Subscription loaded', false);
   } catch (error) {
-    showToast('Failed to load subscription data', true);
     console.error('Error loading subscription data:', error);
     setDefaultValues();
   }
