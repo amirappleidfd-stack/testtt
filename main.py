@@ -621,212 +621,125 @@ async def websocket_tunnel(websocket: WebSocket, uuid: str):
 LOGIN_HTML = r"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AMIR VPN</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    html[data-theme="dark"]{--bg:#050508;--surface:rgba(20,20,20,0.85);--surface2:#1c1c1c;--border:rgba(255,255,255,0.06);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#ff1a1a;--primary-glow:rgba(255,26,26,0.15);--accent:#b91c1c;--error:#ef4444;--error-bg:rgba(239,68,68,0.08);--orb1:rgba(255,26,26,0.12);--orb2:rgba(139,0,0,0.1);--orb3:rgba(220,38,38,0.06)}
-    html[data-theme="light"]{--bg:#080c0a;--surface:rgba(10,30,20,0.85);--surface2:#0a1a10;--border:rgba(0,255,136,0.06);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#00ff88;--primary-glow:rgba(0,255,136,0.15);--accent:#10b981;--error:#ef4444;--error-bg:rgba(239,68,68,0.08);--orb1:rgba(0,255,136,0.12);--orb2:rgba(5,150,105,0.1);--orb3:rgba(34,197,94,0.06)}
-    html[data-theme="purple"]{--bg:#0a0610;--surface:rgba(40,10,60,0.85);--surface2:#1c0930;--border:rgba(168,85,247,0.06);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#a855f7;--primary-glow:rgba(168,85,247,0.15);--accent:#9333ea;--error:#ef4444;--error-bg:rgba(239,68,68,0.08);--orb1:rgba(168,85,247,0.12);--orb2:rgba(109,40,217,0.1);--orb3:rgba(139,92,246,0.06)}
-    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text);transition:background .5s,color .5s;overflow:hidden}
-    body[dir="rtl"]{direction:rtl;text-align:right}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMIR VPN</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#ff1a1a;--glow:rgba(255,26,26,0.2)}
+html[data-theme="dark"]{--bg:#080810;--card:rgba(255,255,255,0.04);--card-b:rgba(255,255,255,0.06);--inp:rgba(255,255,255,0.06);--t:#f0f0f0;--ts:rgba(255,255,255,0.55);--tt:rgba(255,255,255,0.2);--primary:#ff1a1a;--glow:rgba(255,26,26,0.2)}
+html[data-theme="light"]{--bg:#e4eaf6;--card:rgba(255,255,255,0.65);--card-b:rgba(0,0,0,0.06);--inp:rgba(255,255,255,0.7);--t:#1a1a2e;--ts:#666;--tt:#aaa;--primary:#1a8cff;--glow:rgba(26,140,255,0.2)}
+html[data-theme="purple"]{--bg:#0c0818;--card:rgba(168,85,247,0.04);--card-b:rgba(168,85,247,0.08);--inp:rgba(168,85,247,0.08);--t:#f0f0f0;--ts:rgba(255,255,255,0.55);--tt:rgba(255,255,255,0.2);--primary:#a855f7;--glow:rgba(168,85,247,0.25)}
+body{font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--t);transition:all .5s;overflow:hidden}
+body[dir="rtl"]{direction:rtl;text-align:right}
 
-    .bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-    .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0;animation:orbFloat 20s ease-in-out infinite}
-    .orb-1{width:400px;height:400px;background:var(--orb1);top:-10%;left:-5%;animation-delay:0s}
-    .orb-2{width:350px;height:350px;background:var(--orb2);bottom:-10%;right:-5%;animation-delay:-7s}
-    .orb-3{width:250px;height:250px;background:var(--orb3);top:40%;left:60%;animation-delay:-14s}
-    @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);opacity:0.6}25%{transform:translate(60px,-40px) scale(1.1);opacity:0.8}50%{transform:translate(-30px,50px) scale(0.9);opacity:0.5}75%{transform:translate(40px,20px) scale(1.05);opacity:0.7}}
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bg-fx::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,var(--glow) 0%,transparent 50%),radial-gradient(circle at 70% 60%,var(--glow) 0%,transparent 50%);opacity:.6}
 
-    .grid-bg{position:fixed;inset:0;z-index:0;opacity:0.03;background-image:linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.wrp{position:relative;z-index:1;width:100%;max-width:380px;padding:20px}
+.box{background:var(--card);border:1px solid var(--card-b);border-radius:24px;padding:44px 32px 28px;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);box-shadow:0 24px 80px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.04);animation:boxUp .7s cubic-bezier(.16,1,.3,1) forwards;opacity:0;transform:translateY(24px)}
+@keyframes boxUp{to{opacity:1;transform:none}}
+.box::before{content:'';position:absolute;top:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,var(--primary) 50%,transparent);animation:lineGlow 5s ease-in-out infinite}
+@keyframes lineGlow{0%,100%{opacity:.35;transform:scaleX(.5)}50%{opacity:1;transform:none}}
 
-    .toolbar{position:fixed;top:20px;right:20px;display:flex;gap:6px;z-index:10}
-    .toolbar button{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .3s;backdrop-filter:blur(20px)}
-    .toolbar button:hover{border-color:var(--primary);color:var(--primary);transform:scale(1.05)}
+.logo{text-align:center;margin-bottom:28px;position:relative}
+.logo .sq{width:88px;height:88px;border-radius:20px;background:linear-gradient(135deg,var(--primary),color-mix(in srgb,var(--primary),#000 40%));display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;position:relative;box-shadow:0 12px 40px var(--glow);animation:pulse 4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 12px 40px var(--glow)}50%{box-shadow:0 16px 60px var(--glow)}}
+.logo .sq svg{width:44px;height:44px}
+.logo .sq::after{content:'';position:absolute;inset:-1px;border-radius:21px;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);pointer-events:none}
+.logo .nm{font-size:18px;font-weight:800;letter-spacing:-.02em;animation:slIn .6s .25s both}
+.logo .sub{font-size:9px;color:var(--tt);font-weight:700;text-transform:uppercase;letter-spacing:.2em;margin-top:4px;animation:slIn .6s .35s both}
+@keyframes slIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-    .login-page{width:100%;max-width:380px;padding:0 20px;position:relative;z-index:1}
-    .login-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:48px 36px 36px;position:relative;overflow:hidden;backdrop-filter:blur(40px);box-shadow:0 8px 40px rgba(0,0,0,0.15),0 0 80px var(--primary-glow);animation:cardIn .8s cubic-bezier(0.16,1,0.3,1) forwards;opacity:0;transform:translateY(30px) scale(0.96)}
-    @keyframes cardIn{to{opacity:1;transform:translateY(0) scale(1)}}
-    .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent);animation:shimmer 3s ease-in-out infinite}
-    @keyframes shimmer{0%,100%{opacity:0.5;transform:scaleX(0.5)}50%{opacity:1;transform:scaleX(1)}}
-    .login-card::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),var(--primary-glow) 0%,transparent 50%);pointer-events:none;transition:opacity .3s;opacity:0}
-    .login-card:hover::after{opacity:1}
+.fg{margin-bottom:16px;animation:slIn .6s .4s both}
+.fg label{display:block;font-size:9px;font-weight:700;color:var(--ts);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em}
+.fg input{width:100%;padding:11px 14px;background:var(--inp);border:1px solid var(--card-b);border-radius:12px;color:var(--t);font-size:13px;font-family:inherit;outline:none;transition:all .3s}
+.fg input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--glow)}
+.fg input::placeholder{color:var(--tt)}
 
-    .brand{text-align:center;margin-bottom:36px}
-    .brand svg{margin-bottom:20px;filter:drop-shadow(0 0 20px var(--primary-glow));animation:logoPulse 4s ease-in-out infinite}
-    @keyframes logoPulse{0%,100%{filter:drop-shadow(0 0 20px var(--primary-glow));transform:scale(1)}50%{filter:drop-shadow(0 0 30px var(--primary-glow));transform:scale(1.02)}}
-    .brand h1{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.03em;animation:fadeUp .6s .2s ease both}
-    .brand p{font-size:11px;color:var(--text3);margin-top:6px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;animation:fadeUp .6s .3s ease both}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.go{width:100%;padding:11px;background:var(--primary);border:none;border-radius:12px;color:#fff;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .3s;letter-spacing:.03em;animation:slIn .6s .5s both;position:relative;overflow:hidden}
+.go::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,.2);border-radius:50%;transform:translate(-50%,-50%);transition:width .5s,height .5s}
+.go:hover{filter:brightness(1.15);transform:translateY(-1px);box-shadow:0 8px 24px var(--glow)}
+.go:hover::before{width:300px;height:300px}
+.go:active{transform:translateY(0) scale(.97)}
 
-    .form-group{margin-bottom:20px;animation:fadeUp .6s .4s ease both}
-    .form-group label{display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em}
-    .form-group input{width:100%;padding:13px 16px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:all .3s cubic-bezier(0.4,0,0.2,1)}
-    .form-group input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-glow),0 0 20px var(--primary-glow)}
-    .form-group input::placeholder{color:var(--text3)}
+.err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);color:#ef4444;padding:9px 12px;border-radius:10px;font-size:11px;display:none;margin-bottom:16px;text-align:center;font-weight:600;animation:shk .4s}
+.err.show{display:block}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
-    .login-btn{width:100%;padding:13px;background:var(--primary);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .3s cubic-bezier(0.4,0,0.2,1);letter-spacing:0.02em;position:relative;overflow:hidden;animation:fadeUp .6s .5s ease both}
-    .login-btn::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,0.2);border-radius:50%;transform:translate(-50%,-50%);transition:width .5s,height .5s}
-    .login-btn:hover{filter:brightness(1.15);transform:translateY(-2px);box-shadow:0 8px 25px var(--primary-glow)}
-    .login-btn:hover::before{width:300px;height:300px}
-    .login-btn:active{transform:translateY(0) scale(0.98)}
-    .login-btn:active::before{width:0;height:0;transition:width .1s,height .1s}
+.toolbar{position:fixed;top:16px;right:16px;display:flex;gap:6px;z-index:10}
+.toolbar button{width:32px;height:32px;border-radius:8px;border:1px solid var(--card-b);background:var(--card);color:var(--ts);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(10px)}
+.toolbar button:hover{border-color:var(--primary);color:var(--primary)}
 
-    .error-msg{background:var(--error-bg);border:1px solid rgba(255,77,106,0.15);color:var(--error);padding:10px 14px;border-radius:10px;font-size:13px;display:none;margin-bottom:20px;text-align:center;font-weight:500;animation:shake .4s ease}
-    .error-msg.show{display:block}
-    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.theme-bar{position:fixed;top:16px;left:16px;display:flex;gap:5px;z-index:10;background:var(--card);border:1px solid var(--card-b);border-radius:10px;padding:6px;backdrop-filter:blur(20px)}
+.theme-btn{width:22px;height:22px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.theme-btn:hover{transform:scale(1.12)}
+.theme-btn.on{border-color:rgba(255,255,255,.7);box-shadow:0 0 8px var(--glow)}
+.tb-r{background:#ff1a1a}.tb-g{background:#00ff88}.tb-p{background:#a855f7}
 
-    .particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-    .particle{position:absolute;width:2px;height:2px;background:var(--primary);border-radius:50%;opacity:0;animation:particleFall linear infinite}
-    @keyframes particleFall{0%{opacity:0;transform:translateY(-10px) scale(0)}10%{opacity:0.6;transform:translateY(0) scale(1)}90%{opacity:0.3;transform:translateY(calc(100vh - 20px)) scale(0.5)}100%{opacity:0;transform:translateY(100vh) scale(0)}}
-
-    .theme-picker{position:fixed;top:20px;left:20px;z-index:10;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px;display:flex;gap:4px;backdrop-filter:blur(20px)}
-    .theme-option{width:24px;height:24px;border-radius:6px;cursor:pointer;transition:all .2s;border:2px solid transparent}
-    .theme-option:hover{transform:scale(1.15)}
-    .theme-option.selected{border-color:#fff;box-shadow:0 0 8px var(--primary-glow)}
-    .theme-red{background:#ff1a1a}
-    .theme-green{background:#00ff88}
-    .theme-purple{background:#a855f7}
-  </style>
+canvas#galaxy{position:fixed;inset:0;z-index:0;pointer-events:none}
+</style>
 </head>
 <body>
-  <div class="theme-picker">
-    <div class="theme-option theme-red selected" onclick="setTheme('dark')" title="Red Neon Theme"></div>
-    <div class="theme-option theme-green" onclick="setTheme('light')" title="Ghost Neon Theme"></div>
-    <div class="theme-option theme-purple" onclick="setTheme('purple')" title="Purple Neon Theme"></div>
-  </div>
-
-  <div class="bg-canvas"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
-  <div class="grid-bg"></div>
-  <div class="particles" id="particles"></div>
-
-  <div class="toolbar">
-    <button id="lang-toggle" onclick="cycleLang()" title="Language">EN</button>
-  </div>
-
-  <div class="login-page">
-    <div class="login-card" id="login-card">
-      <div class="brand">
-        <svg width="110" height="110" viewBox="0 0 120 120" style="border-radius:24px;overflow:hidden;filter:drop-shadow(0 0 24px var(--primary-glow))">
-          <defs>
-            <linearGradient id="amir-g" x1="0" y1="0" x2="120" y2="120">
-              <stop stop-color="#ff1a1a"/><stop offset="1" stop-color="#7f1d1d"/>
-            </linearGradient>
-            <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <rect width="120" height="120" rx="24" fill="url(#amir-g)"/>
-          <!-- Rotating circle -->
-          <circle cx="60" cy="52" r="30" fill="none" stroke="#fff" stroke-width="0.6" opacity="0.2">
-            <animateTransform attributeName="transform" type="rotate" from="0 60 52" to="360 60 52" dur="20s" repeatCount="indefinite"/>
-          </circle>
-          <!-- AMIR text with 3D flip to VPN -->
-          <g filter="url(#glow)">
-            <text x="60" y="48" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="900" fill="#fff">
-              AMIR
-              <animate attributeName="opacity" values="1,1,0,0,1" dur="6s" repeatCount="indefinite"/>
-            </text>
-            <text x="61.5" y="49.5" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="900" fill="rgba(255,255,255,0.15)">
-              AMIR
-              <animate attributeName="opacity" values="0.15,0.15,0,0,0.15" dur="6s" repeatCount="indefinite"/>
-            </text>
-            <text x="60" y="48" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="900" fill="#fff">
-              VPN
-              <animate attributeName="opacity" values="0,0,1,1,0" dur="6s" repeatCount="indefinite"/>
-            </text>
-            <text x="61.5" y="49.5" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="900" fill="rgba(255,255,255,0.15)">
-              VPN
-              <animate attributeName="opacity" values="0,0,0.15,0.15,0" dur="6s" repeatCount="indefinite"/>
-            </text>
-          </g>
-          <!-- Center node -->
-          <circle cx="60" cy="52" r="2" fill="#fff" opacity="0.8">
-            <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite"/>
-          </circle>
-          <!-- Orbiting dots -->
-          <circle cx="60" cy="22" r="2.5" fill="#fff" opacity="0.7">
-            <animateTransform attributeName="transform" type="rotate" from="0 60 52" to="360 60 52" dur="5s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="90" cy="52" r="2" fill="#fff" opacity="0.5">
-            <animateTransform attributeName="transform" type="rotate" from="120 60 52" to="480 60 52" dur="7s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="30" cy="52" r="2" fill="#fff" opacity="0.5">
-            <animateTransform attributeName="transform" type="rotate" from="240 60 52" to="600 60 52" dur="7s" repeatCount="indefinite"/>
-          </circle>
-          <!-- Bottom label -->
-          <text x="60" y="78" text-anchor="middle" font-family="Inter, sans-serif" font-size="7" font-weight="700" fill="rgba(255,255,255,0.5)" letter-spacing="0.25em">SECURE VPN</text>
-          <!-- Bottom network bar -->
-          <circle cx="32" cy="100" r="3" fill="#fff" opacity="0.5">
-            <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3s" repeatCount="indefinite"/>
-          </circle>
-          <line x1="35" y1="100" x2="55" y2="100" stroke="#fff" stroke-width="0.8" opacity="0.3"/>
-          <circle cx="60" cy="100" r="3" fill="#fff" opacity="0.8">
-            <animate attributeName="r" values="3;4;3" dur="2.5s" repeatCount="indefinite"/>
-          </circle>
-          <line x1="63" y1="100" x2="85" y2="100" stroke="#fff" stroke-width="0.8" opacity="0.3"/>
-          <circle cx="88" cy="100" r="3" fill="#fff" opacity="0.5">
-            <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3s" begin="0.5s" repeatCount="indefinite"/>
-          </circle>
-          </line>
-          <circle cx="135" cy="105" r="3" fill="var(--primary)" opacity="0.6">
-            <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" begin="1s" repeatCount="indefinite"/>
+<div class="bg-fx"></div>
+<canvas id="galaxy"></canvas>
+<div class="theme-bar">
+  <div class="theme-btn tb-r on" onclick="setTheme('dark')" title="Red Neon"></div>
+  <div class="theme-btn tb-g" onclick="setTheme('light')" title="Light"></div>
+  <div class="theme-btn tb-p" onclick="setTheme('purple')" title="Purple Neon"></div>
+</div>
+<div class="toolbar">
+  <button id="lang-btn" onclick="cycleLang()">EN</button>
+</div>
+<div class="wrp">
+  <div class="box" id="box">
+    <div class="logo">
+      <div class="sq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+          <circle cx="12" cy="12" r="2.5" fill="#fff" opacity=".9">
+            <animate attributeName="r" values="2.5;3.2;2.5" dur="2.5s" repeatCount="indefinite"/>
           </circle>
         </svg>
-        <h1>AMIR VPN</h1>
-        <p>v1.0</p>
       </div>
-      <div class="error-msg" id="err-box"></div>
-      <form id="login-form">
-        <div class="form-group">
-          <label data-en="Password" data-fa="رمز عبور">Password</label>
-          <input type="password" id="password" placeholder="Enter password" autofocus>
-        </div>
-        <button type="submit" class="login-btn" data-en="Sign In" data-fa="ورود">Sign In</button>
-      </form>
+      <div class="nm">AMIR VPN</div>
+      <div class="sub">Secure Connection</div>
     </div>
+    <div class="err" id="err"></div>
+    <form id="login-form">
+      <div class="fg">
+        <label data-en="Password" data-fa="&#x0631;&#x0645;&#x0632; &#x0639;&#x0628;&#x0648;&#x0631;">Password</label>
+        <input type="password" id="password" placeholder="&#x062A;&#x0648;&#x06CC; &#x0631;&#x0645;&#x0632;&#x0639;&#x0628;&#x0648;&#x0631;" autofocus>
+      </div>
+      <button type="submit" class="go" data-en="Sign In" data-fa="&#x0648;&#x0631;&#x0648;&#x062F;">Sign In</button>
+    </form>
   </div>
+</div>
+<script>
+let lang=localStorage.getItem('amir_lang')||'en';
+let theme=localStorage.getItem('amir_theme')||'dark';
+function setLang(l){lang=l;document.body.dir=l==='fa'?'rtl':'ltr';document.querySelectorAll('[data-en]').forEach(el=>{const v=el.getAttribute('data-'+l);if(v)el.textContent=v});document.getElementById('lang-btn').textContent=l.toUpperCase();localStorage.setItem('amir_lang',l)}
+function cycleLang(){setLang(lang==='en'?'fa':'en')}
+function setTheme(t){theme=t;document.documentElement.setAttribute('data-theme',t);localStorage.setItem('amir_theme',t);document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('on'));if(t==='dark')document.querySelector('.tb-r').classList.add('on');if(t==='light')document.querySelector('.tb-g').classList.add('on');if(t==='purple')document.querySelector('.tb-p').classList.add('on')}
+setTheme(theme);setLang(lang);
 
-  <canvas id="galaxy" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();const err=document.getElementById('err');err.classList.remove('show');
+  try{const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('password').value})});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.detail||'Failed');}location.href='/dashboard';}catch(e){err.textContent=e.message;err.classList.add('show')}
+});
 
-  <script>
-    let lang = localStorage.getItem('amir_lang') || 'en';
-    let theme = localStorage.getItem('amir_theme') || 'dark';
-    function setLang(l) {lang=l;document.body.dir=l==='fa'?'rtl':'ltr';document.querySelectorAll('[data-en]').forEach(el=>{const v=el.getAttribute('data-'+l);if(v)el.textContent=v});document.getElementById('lang-toggle').textContent=l.toUpperCase();localStorage.setItem('amir_lang',l)}
-    function cycleLang() {setLang(lang==='en'?'fa':'en')}
-    function applyTheme(t) {theme=t;document.documentElement.setAttribute('data-theme',t);localStorage.setItem('amir_theme',t);document.querySelectorAll('.theme-option').forEach(o=>o.classList.remove('selected'));if(t==='dark')document.querySelector('.theme-red').classList.add('selected');if(t==='light')document.querySelector('.theme-green').classList.add('selected');if(t==='purple')document.querySelector('.theme-purple').classList.add('selected')}
-    function toggleTheme(){applyTheme(theme==='dark'?'light':(theme==='light'?'purple':'dark'))}
-    function setTheme(t){applyTheme(t)}
-    applyTheme(theme);setLang(lang);
-
-    const card=document.getElementById('login-card');
-    card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')});
-
-    // Galaxy background
-    const canvas=document.getElementById('galaxy');
-    const ctx=canvas.getContext('2d');
-    let stars=[];
-    function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
-    function initStars(){stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+0.3,speed:Math.random()*0.3+0.05,flicker:Math.random()*Math.PI*2})}
-    function drawGalaxy(){ctx.clearRect(0,0,canvas.width,canvas.height);const t=Date.now()*0.001;stars.forEach(s=>{const alpha=0.3+0.4*Math.sin(t*s.speed+s.flicker);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+alpha+')';ctx.fill()});requestAnimationFrame(drawGalaxy)}
-    resizeCanvas();initStars();drawGalaxy();
-    window.addEventListener('resize',()=>{resizeCanvas();initStars()});
-
-    // Particles
-    const pc=document.getElementById('particles');
-    for(let i=0;i<15;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDuration=(8+Math.random()*12)+'s';p.style.animationDelay=Math.random()*10+'s';p.style.width=p.style.height=(1+Math.random()*2)+'px';pc.appendChild(p)}
-
-    document.getElementById('login-form').addEventListener('submit',async e=>{
-      e.preventDefault();const err=document.getElementById('err-box');err.classList.remove('show');
-      try{const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('password').value})});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.detail||'Failed');}location.href='/dashboard';}catch(e){err.textContent=e.message;err.classList.add('show')}
-    });
-  </script>
+// Galaxy
+const c=document.getElementById('galaxy'),cx=c.getContext('2d');let S=[];
+function resize(){c.width=innerWidth;c.height=innerHeight}
+function init(){S=[];for(let i=0;i<160;i++)S.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.3+.3,s:Math.random()*.25+.05,p:Math.random()*Math.PI*2})}
+function draw(){cx.clearRect(0,0,c.width,c.height);const t=Date.now()*.001;S.forEach(s=>{cx.globalAlpha=.15+.25*Math.sin(t*s.s+s.p);cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fillStyle='#fff';cx.fill()});requestAnimationFrame(draw)}
+resize();init();draw();onresize=()=>{resize();init()};
+</script>
 </body>
 </html>"""
-
 
 DASHBOARD_HTML = r"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -1074,10 +987,6 @@ body[dir="rtl"]{direction:rtl;text-align:right}
       <span class="nav-badge" id="links-badge">0</span>
     </button>
 
-    <button class="nav-item" data-page="domain">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      <span data-en="Domain" data-fa="دامنه">Domain</span>
-    </button>
     <div class="nav-section">System</div>
     <button class="nav-item" data-page="security">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
@@ -1111,8 +1020,7 @@ body[dir="rtl"]{direction:rtl;text-align:right}
         <div class="page-sub" id="last-update">Updated: --</div>
       </div>
       <div style="display:flex;gap:6px">
-        <button class="btn btn-secondary" onclick="quickCreate(0.5,'GB')">+ 0.5 GB</button>
-        <button class="btn btn-primary" onclick="quickCreate(1,'GB')">+ 1 GB</button>
+        
       </div>
     </div>
     <div class="stats-row">
@@ -1217,65 +1125,9 @@ body[dir="rtl"]{direction:rtl;text-align:right}
 
 
 
-  <section class="page" id="page-addresses">
-    <div class="page-header">
-      <div>
-        <div class="page-title" data-en="Clean IP" data-fa="آی‌پی تمیز">Clean IP</div>
-        <div class="page-sub" data-en="IPs and domains for subscription configs" data-fa="آی‌پی و دامنه‌ها برای کانفیگ‌های سابسکریپشن">IPs and domains for subscription configs</div>
-      </div>
-      <button class="btn btn-primary" onclick="showAddAddressModal()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add
-      </button>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title" data-en="Clean IP List" data-fa="لیست آی‌پی تمیز">Clean IP List</div></div>
-      <div class="status-item" style="flex-direction:column;gap:8px">
-        <div style="display:flex;justify-content:space-between;width:100%">
-          <span class="status-key" style="color:var(--text3);font-size:11px">Default: www.speedtest.net</span>
-        </div>
-        <div id="address-list" style="display:flex;flex-direction:column;gap:6px;width:100%"></div>
-      </div>
-    </div>
-  </section>
 
-  <section class="page" id="page-domain">
-    <div class="page-header">
-      <div>
-        <div class="page-title" data-en="Domain" data-fa="دامنه">Domain</div>
-        <div class="page-sub" data-en="Replace Render domain in configs with your custom domain" data-fa="جایگزینی دامنه رندر با دامنه اختصاصی در کانفیگ‌ها">Replace Render domain in configs with your custom domain</div>
-      </div>
-    </div>
-    <div class="card" style="max-width:500px">
-      <div class="card-header"><div class="card-title" data-en="Custom Domain" data-fa="دامنه اختصاصی">Custom Domain</div></div>
-      <div id="domain-current" style="margin-bottom:16px">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px">
-          <div style="display:flex;align-items:center;gap:10px">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-            <div>
-              <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em" data-en="Current Domain" data-fa="دامنه فعلی">Current Domain</div>
-              <div id="domain-value" style="font-size:14px;font-weight:600;color:var(--text);margin-top:2px;font-family:monospace">--</div>
-            </div>
-          </div>
-          <button class="btn btn-danger btn-sm" onclick="clearDomain()" style="display:none" id="domain-clear-btn" data-en="Clear" data-fa="پاک کردن">Clear</button>
-        </div>
-      </div>
-      <div style="padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em" data-en="Render Default Domain" data-fa="دامنه پیش‌فرض رندر">Render Default Domain</div>
-        <div id="render-domain" style="font-size:13px;color:var(--text2);font-family:monospace">--</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" data-en="New Domain" data-fa="دامنه جدید">New Domain</label>
-        <div style="display:flex;gap:8px">
-          <input class="form-input" id="domain-input" placeholder="example.com" style="flex:1">
-          <button class="btn btn-primary" onclick="saveDomain()" data-en="Save" data-fa="ذخیره">Save</button>
-        </div>
-      </div>
-      <div style="margin-top:12px;padding:10px;background:var(--primary-dim);border:1px solid rgba(255,26,26,0.15);border-radius:8px">
-        <div style="font-size:11px;color:var(--text2);line-height:1.6" data-en="Set a custom domain to replace the Render domain in all VLESS configs. Make sure your domain points to this service via CNAME or A record." data-fa="دامنه اختصاصی تنظیم کنید تا دامنه رندر در تمام کانفیگ‌های VLESS جایگزین شود. مطمئن شوید دامنه شما از طریق CNAME یا A record به این سرویس اشاره می‌کند.">Set a custom domain to replace the Render domain in all VLESS configs. Make sure your domain points to this service via CNAME or A record.</div>
-      </div>
-    </div>
-  </section>
+
+
 
   <section class="page" id="page-security">
     <div class="page-header"><div><div class="page-title">Security</div><div class="page-sub">Change panel password</div></div></div>
@@ -1395,19 +1247,7 @@ body[dir="rtl"]{direction:rtl;text-align:right}
   </div>
 </div>
 
-<div class="modal-overlay" id="add-address-modal" onclick="if(event.target===this)this.classList.remove('show')">
-  <div class="modal" style="position:relative">
-    <button class="modal-close" onclick="$('#add-address-modal').classList.remove('show')">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div class="modal-title" data-en="Add Clean IP" data-fa="افزودن آی‌پی تمیز">Add Clean IP</div>
-    <div class="form-group">
-      <label class="form-label" data-en="IPs or Domains (one per line)" data-fa="آی‌پی یا دامنه (هر خط یکی)">IPs or Domains (one per line)</label>
-      <textarea class="form-input" id="new-address" rows="5" placeholder="8.8.8.8&#10;example.com&#10;1.0.0.1" style="resize:vertical;font-family:monospace"></textarea>
-    </div>
-    <button class="btn btn-primary" onclick="addAddresses()" style="width:100%;margin-top:8px;justify-content:center" data-en="Add All" data-fa="افزودن همه">Add All</button>
-  </div>
-</div>
+
 
 <canvas id="galaxy" style="position:fixed;inset:0;z-index:-1;pointer-events:none"></canvas>
 
@@ -1517,7 +1357,6 @@ function renderLinks(links){
 }
 
 async function toggleLink(el){const uid=el.dataset.uid;const link=allLinks.find(l=>l.uuid===uid);if(!link)return;const newActive=!link.active;try{await fetch(`/api/links/${uid}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({active:newActive})});link.active=newActive;filterInbounds();loadStats();}catch(e){}}
-async function quickCreate(limit,unit){const names=['Ali','Sara','Reza','Nima','Mina','Arash','Yalda','Dariush','Cyrus','Shirin'];const name=names[Math.floor(Math.random()*names.length)]+'-'+Math.floor(Math.random()*100);try{const r=await fetch('/api/links',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({label:name,limit_value:limit,limit_unit:unit})});if(!r.ok)throw new Error();toast('Created: '+name);await loadLinks();await loadStats();}catch(e){toast('Error',true)}}
 async function createLink(){const label=$('#new-label').value.trim()||'New Link';const val=parseFloat($('#new-limit').value)||0;const unit=$('#new-unit').value||'GB';const maxconn=parseInt($('#new-maxconn').value)||0;const expiry=parseInt($('#new-expiry').value)||0;if(!/^[a-zA-Z0-9\\-_. ]+$/.test(label)){toast('Only English letters allowed',true);return;}try{const r=await fetch('/api/links',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({label,limit_value:val,limit_unit:unit,max_connections:maxconn,expiry_days:expiry})});if(!r.ok)throw new Error();toast('Created');$('#new-label').value='';$('#new-limit').value='';$('#new-maxconn').value='';$('#new-expiry').value='';$('#new-unit').value='GB';$('#add-modal').classList.remove('show');await loadLinks();await loadStats();}catch(e){toast('Error',true)}}
 async function resetUsage(uid){try{await fetch(`/api/links/${uid}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({reset_usage:true})});toast('Reset');await loadLinks();}catch(e){}}
 async function deleteLink(uid){if(!confirm('Delete this inbound?'))return;try{await fetch(`/api/links/${uid}`,{method:'DELETE'});toast('Deleted');await loadLinks();await loadStats();}catch(e){}}
@@ -1555,15 +1394,12 @@ applyTheme(theme);setLang(lang);
 loadStats();loadLinks();loadAddresses();loadDomain();
 setInterval(()=>{loadStats()},10000);
 
-let allAddresses=[];
-async function loadAddresses(){try{const r=await fetch('/api/addresses');if(!r.ok)throw new Error();const d=await r.json();allAddresses=d.addresses||[];renderAddresses();}catch(e){}}
 
 let currentDomain='';
 async function loadDomain(){try{const r=await fetch('/api/domain');if(!r.ok)throw new Error();const d=await r.json();currentDomain=d.domain||'';const renderDomain=statsData.domain||location.host;$('#render-domain').textContent=renderDomain;if(currentDomain){$('#domain-value').textContent=currentDomain;$('#domain-value').style.color='var(--green)';$('#domain-clear-btn').style.display='block';}else{$('#domain-value').textContent=renderDomain+' (default)';$('#domain-value').style.color='var(--text2)';$('#domain-clear-btn').style.display='none';}}catch(e){}}
 async function saveDomain(){const domain=$('#domain-input').value.trim();if(!domain){toast('Enter a domain',true);return;}try{const r=await fetch('/api/domain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({domain})});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.detail||'Error');}toast('Domain saved');$('#domain-input').value='';await loadDomain();await loadLinks();}catch(e){toast(e.message,true)}}
 async function clearDomain(){try{await fetch('/api/domain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({domain:''})});toast('Domain cleared');await loadDomain();await loadLinks();}catch(e){toast('Error',true)}}
 
-function renderAddresses(){const list=$('#address-list');if(!list)return;if(!allAddresses.length){list.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0">No addresses added</div>';return;}list.innerHTML=allAddresses.map((a,i)=>`
     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">
       <div style="display:flex;align-items:center;gap:10px">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
@@ -1578,9 +1414,6 @@ function renderAddresses(){const list=$('#address-list');if(!list)return;if(!all
     </div>
   `).join('');}
 
-function showAddAddressModal(){$('#new-address').value='';$('#add-address-modal').classList.add('show')}
-async function addAddresses(){const text=$('#new-address').value.trim();if(!text){toast('Enter at least one IP or domain',true);return;}const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);let added=0;let errors=0;for(const addr of lines){if(!/^[a-zA-Z0-9\\-_. ]+$/.test(addr)){errors++;continue;}try{const r=await fetch('/api/addresses',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:addr})});if(r.ok)added++;else errors++;}catch(e){errors++;}}if(added>0)toast(`Added ${added} address(es)`);if(errors>0)toast(`${errors} failed`,true);if(added>0){$('#add-address-modal').classList.remove('show');await loadAddresses();}}
-async function deleteAddress(index){if(!confirm('Delete this address?'))return;try{const r=await fetch(`/api/addresses/${index}`,{method:'DELETE'});if(!r.ok)throw new Error();toast('Deleted');await loadAddresses();}catch(e){toast('Error',true)}}
 
 let chartLabels=[];let chartData=[];
 function getPrimaryColor(){const t=theme;if(t==='dark')return{bg:'rgba(255,26,26,0.7)',border:'#ff1a1a'};if(t==='light')return{bg:'rgba(0,255,136,0.7)',border:'#00ff88'};return{bg:'rgba(168,85,247,0.7)',border:'#a855f7'};}
@@ -1918,16 +1751,16 @@ async def dashboard_page(request: Request):
         return RedirectResponse(url="/login")
     return HTMLResponse(content=DASHBOARD_HTML)
 
-@app.get("/sub-page/{uid}", response_class=HTMLResponse)
-async def sub_page(request: Request, uid: str):
+@app.get("/subscription-info/{uid}", response_class=HTMLResponse)
+async def subscription_info_page(request: Request, uid: str):
     async with LINKS_LOCK:
         link = LINKS.get(uid)
         if link is None:
             raise HTTPException(status_code=404, detail="link not found")
     return HTMLResponse(content=SUB_HTML)
 
-@app.get("/subscription-info/{uid}", response_class=HTMLResponse)
-async def subscription_info_page(request: Request, uid: str):
+@app.get("/sub-page/{uid}", response_class=HTMLResponse)
+async def sub_page(request: Request, uid: str):
     async with LINKS_LOCK:
         link = LINKS.get(uid)
         if link is None:
