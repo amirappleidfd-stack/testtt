@@ -628,7 +628,7 @@ LOGIN_HTML = r"""<!DOCTYPE html>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--primary:#ff1a1a;--glow:rgba(255,26,26,0.2)}
-html[data-theme="dark"]{--bg:#080810;--card:rgba(255,255,255,0.04);--card-b:rgba(255,255,255,0.06);--inp:rgba(255,255,255,0.06);--t:#f0f0f0;--ts:rgba(255,255,255,0.55);--tt:rgba(255,255,255,0.2);--primary:#ff1a1a;--glow:rgba(255,26,26,0.2)}
+html[data-theme="dark"]{--bg:#e4eaf6;--card:rgba(255,255,255,0.65);--card-b:rgba(0,0,0,0.06);--inp:rgba(255,255,255,0.7);--t:#1a1a2e;--ts:#666;--tt:#aaa;--primary:#1a8cff;--glow:rgba(26,140,255,0.2)}
 html[data-theme="light"]{--bg:#e4eaf6;--card:rgba(255,255,255,0.65);--card-b:rgba(0,0,0,0.06);--inp:rgba(255,255,255,0.7);--t:#1a1a2e;--ts:#666;--tt:#aaa;--primary:#1a8cff;--glow:rgba(26,140,255,0.2)}
 html[data-theme="purple"]{--bg:#0c0818;--card:rgba(168,85,247,0.04);--card-b:rgba(168,85,247,0.08);--inp:rgba(168,85,247,0.08);--t:#f0f0f0;--ts:rgba(255,255,255,0.55);--tt:rgba(255,255,255,0.2);--primary:#a855f7;--glow:rgba(168,85,247,0.25)}
 body{font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--t);transition:all .5s;overflow:hidden}
@@ -672,7 +672,7 @@ body[dir="rtl"]{direction:rtl;text-align:right}
 .toolbar button{width:32px;height:32px;border-radius:8px;border:1px solid var(--card-b);background:var(--card);color:var(--ts);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(10px)}
 .toolbar button:hover{border-color:var(--primary);color:var(--primary)}
 
-.theme-bar{position:fixed;top:16px;left:16px;display:flex;gap:5px;z-index:10;background:var(--card);border:1px solid var(--card-b);border-radius:10px;padding:6px;backdrop-filter:blur(20px)}
+.theme-bar{position:fixed;top:16px;left:16px;display:flex;gap:5px;z-index:10;background:var(--card);border:1px solid var(--card-b);border-radius:10px;padding:6px;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);box-shadow:0 4px 20px rgba(0,0,0,0.15)}
 .theme-btn{width:22px;height:22px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .2s}
 .theme-btn:hover{transform:scale(1.12)}
 .theme-btn.on{border-color:rgba(255,255,255,.7);box-shadow:0 0 8px var(--glow)}
@@ -754,7 +754,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html[data-theme="dark"]{--bg:#050508;--surface:rgba(20,20,20,0.8);--surface2:rgba(28,28,28,0.9);--surface3:rgba(42,42,42,0.8);--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#ff1a1a;--primary-glow:rgba(255,26,26,0.15);--primary-dim:rgba(255,26,26,0.08);--accent:#b91c1c;--green:#00ff88;--green-dim:rgba(0,255,136,0.08);--red:#ef4444;--red-dim:rgba(239,68,68,0.08);--yellow:#fbbf24;--sidebar-bg:rgba(10,10,14,0.92);--shadow:0 2px 8px rgba(0,0,0,0.4);--glass-bg:rgba(255,255,255,0.03)}
+html[data-theme="dark"]{--bg:#e4eaf6;--surface:rgba(255,255,255,0.65);--surface2:rgba(245,245,245,0.9);--surface3:rgba(232,232,232,0.8);--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.12);--text:#1a1a2e;--text2:#555;--text3:#999;--primary:#1a8cff;--primary-glow:rgba(26,140,255,0.2);--primary-dim:rgba(26,140,255,0.1);--accent:#0066cc;--green:#00b864;--green-dim:rgba(0,184,100,0.1);--red:#e63946;--red-dim:rgba(230,57,70,0.1);--yellow:#f4a460;--sidebar-bg:rgba(255,255,255,0.85);--shadow:0 2px 8px rgba(0,0,0,0.08);--glass-bg:rgba(0,100,200,0.03)}
 html[data-theme="light"]{--bg:#080c0a;--surface:rgba(10,30,20,0.8);--surface2:rgba(15,40,25,0.9);--surface3:rgba(20,55,35,0.8);--border:rgba(0,255,136,0.06);--border2:rgba(0,255,136,0.1);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#00ff88;--primary-glow:rgba(0,255,136,0.12);--primary-dim:rgba(0,255,136,0.06);--accent:#10b981;--green:#22c55e;--green-dim:rgba(34,197,94,0.08);--red:#ef4444;--red-dim:rgba(239,68,68,0.08);--yellow:#fbbf24;--sidebar-bg:rgba(6,12,10,0.95);--shadow:0 2px 8px rgba(0,0,0,0.4);--glass-bg:rgba(0,255,136,0.02)}
 html[data-theme="purple"]{--bg:#0a0610;--surface:rgba(40,10,60,0.8);--surface2:rgba(50,15,75,0.9);--surface3:rgba(60,20,90,0.8);--border:rgba(168,85,247,0.06);--border2:rgba(168,85,247,0.1);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#a855f7;--primary-glow:rgba(168,85,247,0.12);--primary-dim:rgba(168,85,247,0.06);--accent:#9333ea;--green:#22c55e;--green-dim:rgba(34,197,94,0.08);--red:#ef4444;--red-dim:rgba(239,68,68,0.08);--yellow:#fbbf24;--sidebar-bg:rgba(12,6,18,0.95);--shadow:0 2px 8px rgba(0,0,0,0.4);--glass-bg:rgba(168,85,247,0.02)}
 html,body{height:100%}
@@ -762,7 +762,7 @@ body{font-family:'Inter','Vazirmatn',-apple-system,BlinkMacSystemFont,sans-serif
 body[dir="rtl"]{direction:rtl;text-align:right}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
 
-.sidebar{width:220px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100;transition:background .3s;backdrop-filter:blur(20px)}
+.sidebar{width:220px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100;transition:background .3s;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);box-shadow:0 4px 20px rgba(0,0,0,0.15)}
 .sidebar-brand{padding:16px 16px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
 .sidebar-brand::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--primary),transparent);animation:shimmer 4s ease-in-out infinite}
 @keyframes shimmer{0%,100%{opacity:0.3;transform:scaleX(0.3)}50%{opacity:0.8;transform:scaleX(1)}}
@@ -790,7 +790,7 @@ body[dir="rtl"]{direction:rtl;text-align:right}
 .theme-pick{display:flex;gap:4px;margin-bottom:8px;justify-content:center}
 .theme-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s}
 .theme-dot:hover{transform:scale(1.15)}
-.theme-dot.sel{border-color:rgba(255,255,255,0.6)}
+.theme-dot.sel{border-color:rgba(255,255,255,0.8);box-shadow:0 0 15px var(--primary-glow),0 0 30px var(--primary-glow)}
 .theme-dot.red{background:#ff1a1a}
 .theme-dot.green{background:#00ff88}
 .theme-dot.purple{background:#a855f7}
@@ -804,7 +804,7 @@ body[dir="rtl"]{direction:rtl;text-align:right}
 .page-sub{font-size:12px;color:var(--text3);margin-top:3px}
 
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;transition:all .3s cubic-bezier(0.4,0,0.2,1);animation:cardIn .5s ease both;position:relative;overflow:hidden;backdrop-filter:blur(20px)}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;transition:all .4s cubic-bezier(0.4,0,0.2,1);animation:cardIn .5s ease both;position:relative;overflow:hidden;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);box-shadow:0 8px 32px var(--primary-glow)}
 .stat-card::after{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,var(--glass-bg) 0%,transparent 70%);pointer-events:none}
 .stat-card:nth-child(1){animation-delay:.1s}.stat-card:nth-child(2){animation-delay:.2s}.stat-card:nth-child(3){animation-delay:.3s}.stat-card:nth-child(4){animation-delay:.4s}
 @keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -1425,85 +1425,91 @@ SUB_HTML = r"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AMIR VPN - Subscription</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html[data-theme="dark"]{--bg:#050508;--surface:rgba(20,20,20,0.85);--surface2:#1c1c1c;--surface3:#2a2a2a;--border:rgba(255,255,255,0.06);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#ff1a1a;--primary-glow:rgba(255,26,26,0.15);--primary-dim:rgba(255,26,26,0.08);--green:#00ff88;--green-dim:rgba(0,255,136,0.08);--red:#ef4444;--red-dim:rgba(239,68,68,0.08);--yellow:#fbbf24;--orb1:rgba(255,26,26,0.12);--orb2:rgba(139,0,0,0.1);--orb3:rgba(220,38,38,0.06)}
-html[data-theme="light"]{--bg:#080c0a;--surface:rgba(10,30,20,0.85);--surface2:#0a1a10;--surface3:#152a1a;--border:rgba(0,255,136,0.06);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#00ff88;--primary-glow:rgba(0,255,136,0.15);--primary-dim:rgba(0,255,136,0.08);--green:#22c55e;--green-dim:rgba(34,197,94,0.08);--red:#ef4444;--red-dim:rgba(239,68,68,0.08);--yellow:#fbbf24;--orb1:rgba(0,255,136,0.12);--orb2:rgba(5,150,105,0.1);--orb3:rgba(34,197,94,0.06)}
-html[data-theme="purple"]{--bg:#0a0610;--surface:rgba(40,10,60,0.85);--surface2:#1c0930;--surface3:#2a1040;--border:rgba(168,85,247,0.06);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.5);--text3:rgba(255,255,255,0.25);--primary:#a855f7;--primary-glow:rgba(168,85,247,0.15);--primary-dim:rgba(168,85,247,0.08);--green:#22c55e;--green-dim:rgba(34,197,94,0.08);--red:#ef4444;--red-dim:rgba(239,68,68,0.08);--yellow:#fbbf24;--orb1:rgba(168,85,247,0.12);--orb2:rgba(109,40,217,0.1);--orb3:rgba(139,92,246,0.06)}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+:root{--primary:#ff1a1a;--primary-glow:rgba(255,26,26,0.3);--bg:#050508;--surface:rgba(20,20,20,0.85);--surface2:#1c1c1c;--surface3:#2a2a2a;--border:rgba(255,255,255,0.06);--text:rgba(255,255,255,0.92);--text2:rgba(255,255,255,0.6);--text3:rgba(255,255,255,0.4);--green:#00ff88;--red:#ef4444;--yellow:#fbbf24;--purple:#a855f7;--glass-bg:rgba(255,255,255,0.03)}
+html[data-theme="dark"]{--bg:#e4eaf6;--surface:rgba(255,255,255,0.65);--surface2:#f5f5f5;--surface3:#e8e8e8;--border:rgba(0,0,0,0.08);--text:#1a1a2e;--text2:#555;--text3:#999;--primary:#1a8cff;--primary-glow:rgba(26,140,255,0.25);--green:#00b864;--red:#e63946;--yellow:#f4a460;--purple:#9333ea;--glass-bg:rgba(0,100,200,0.04)}
+html[data-theme="light"]{--bg:#e4eaf6;--surface:rgba(255,255,255,0.65);--surface2:#f5f5f5;--surface3:#e8e8e8;--border:rgba(0,0,0,0.08);--text:#1a1a2e;--text2:#555;--text3:#999;--primary:#1a8cff;--primary-glow:rgba(26,140,255,0.2);--green:#00b864;--red:#e63946;--yellow:#f4a460;--purple:#9333ea;--glass-bg:rgba(0,0,0,0.04)}
+html[data-theme="purple"]{--bg:#0c0818;--surface:rgba(168,85,247,0.06);--surface2:rgba(50,15,75,0.08);--surface3:rgba(30,10,50,0.1);--border:rgba(168,85,247,0.1);--text:#f5f5f5;--text2:#d8d8d8;--text3:#b0b0b0;--primary:#a855f7;--primary-glow:rgba(168,85,247,0.25);--green:#22c55e;--red:#f87171;--yellow:#fbbf24;--purple:#a855f7;--glass-bg:rgba(168,85,247,0.05)}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;transition:background .5s,color .5s;overflow-x:hidden}
 
-.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:0.5;animation:orbFloat 20s ease-in-out infinite;pointer-events:none}
-.orb-1{width:400px;height:400px;background:var(--orb1);top:-10%;left:-5%}
-.orb-2{width:350px;height:350px;background:var(--orb2);bottom:-10%;right:-5%}
-.orb-3{width:250px;height:250px;background:var(--orb3);top:40%;left:60%}
-@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,50px) scale(0.9)}}
+body::before{content:'';position:fixed;inset:-20%;z-index:-1;background:radial-gradient(circle at 20% 20%, var(--primary-glow) 0%, transparent 50%),radial-gradient(circle at 80% 80%, var(--green) 0%, transparent 60%),radial-gradient(circle at 50% 50%, var(--purple) 0%, transparent 70%);filter:blur(60px); animation: backgroundPulse 20s ease-in-out infinite;}
+@keyframes backgroundPulse{0%,100%{opacity:0.6;}50%{opacity:0.9;}}
 
-.theme-picker{position:fixed;top:20px;right:20px;z-index:10;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px;display:flex;gap:4px;backdrop-filter:blur(20px)}
-.theme-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s}
-.theme-dot:hover{transform:scale(1.15)}
-.theme-dot.sel{border-color:rgba(255,255,255,0.6)}
-.theme-dot.red{background:#ff1a1a}
-.theme-dot.green{background:#00ff88}
-.theme-dot.purple{background:#a855f7}
+.glass-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);box-shadow:0 10px 40px var(--primary-glow),0 0 80px var(--primary-glow),inset 0 1px 0 rgba(255,255,255,0.1);transition:all .4s cubic-bezier(.16,1,.3,1);animation:slideIn .6s ease-out;}
+@keyframes slideIn{from{opacity:0;transform:translateY(20px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+.glass-panel:hover{box-shadow:0 15px 60px var(--primary-glow);transform:translateY(-2px);border-color:rgba(255,255,255,0.12);}
+.glass-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--primary),transparent);opacity:0;transition:opacity .3s;}
+.glass-panel:hover::before{opacity:0.6;}
 
-.container{max-width:480px;width:100%;position:relative;z-index:1;margin-top:30px}
-.header{text-align:center;margin-bottom:24px}
-.header h1{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
-.header p{font-size:13px;color:var(--text3)}
+.panel-title{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:20px;display:flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:0.05em;position:relative;z-index:1;}
+.panel-title::before{content:'';width:3px;height:18px;background:var(--primary);border-radius:2px;}
 
-.glass-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;backdrop-filter:blur(30px);position:relative;overflow:hidden}
-.glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent);opacity:0.5}
-.glass-card-title{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:16px;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:0.04em}
+.countdown{display:flex;gap:12px;justify-content:center;margin:16px 0}
+.countdown-item{text-align:center;padding:16px 20px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;min-width:75px;position:relative;overflow:hidden;transition:all .3s ease;}
+.countdown-item:hover{background:rgba(255,255,255,0.06);transform:translateY(-2px);box-shadow:0 5px 20px var(--primary-glow);}
+.countdown-item::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);animation:scan 3s infinite;}
+@keyframes scan{0%{left:-100%}50%{left:100%}100%{left:100%}}
+.countdown-val{font-size:32px;font-weight:800;color:var(--primary);line-height:1;font-variant-numeric:tabular-nums;}
+.countdown-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-top:8px;font-weight:600;}
 
-/* Countdown */
-.countdown{display:flex;gap:10px;justify-content:center}
-.countdown-item{text-align:center;padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;min-width:65px}
-.countdown-val{font-size:28px;font-weight:800;color:var(--primary);line-height:1}
-.countdown-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-top:4px}
-.expiry-date{margin-top:12px;text-align:center;font-size:12px;color:var(--text2)}
-.expiry-date span{color:var(--primary);font-weight:600}
+.ring-wrap{margin:20px auto 10px;filter:drop-shadow(0 0 20px var(--primary-glow))}
+.ring-svg{overflow:visible;transform:rotate(-90deg);}
+.ring-bg{stroke:var(--surface3);stroke-width:10;}
+.ring-progress{stroke:var(--primary);stroke-width:10;stroke-linecap:round;transition:all 1s cubic-bezier(0.4,0,0.2,1);filter:drop-shadow(0 0 10px var(--primary))}
+.ring-progress.hover{stroke:var(--green);filter:drop-shadow(0 0 15px var(--green))}
+.ring-text{font-size:22px;font-weight:700;fill:var(--text);text-anchor:middle;}
+.ring-subtext{font-size:12px;fill:var(--text3);text-anchor:middle;}
 
-/* Circular progress */
-.progress-ring-wrap{display:flex;justify-content:center;margin-bottom:12px}
-.progress-info{text-align:center}
-.progress-info .usage-text{font-size:13px;color:var(--text2);margin-top:8px}
-.progress-info .usage-text span{color:var(--text);font-weight:600}
-.progress-info .used-val{font-size:20px;font-weight:700;color:var(--text)}
-.progress-info .limit-val{font-size:12px;color:var(--text3)}
+.conn-box{display:flex;align-items:center;justify-content:center;gap:16px;padding:20px;background:linear-gradient(135deg, var(--surface2), var(--surface));border-radius:16px;border:1px solid var(--border);margin:20px 0}
+.conn-icon{width:40px;height:40px;background:linear-gradient(135deg, rgba(255,26,26,0.15), rgba(255,26,26,0.05));border-radius:10px;display:flex;align-items:center;justify-content:center}
+.conn-number{font-size:38px;font-weight:800;color:var(--primary);min-width:50px;text-align:center;font-variant-numeric:tabular-nums}
+.conn-info{text-align:left}
+.conn-label{font-size:14px;color:var(--text2);font-weight:600;margin-bottom:4px}
+.conn-detail{font-size:12px;color:var(--text3)}
 
-/* Connected users */
-.connected-count{display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px}
-.connected-count .num{font-size:28px;font-weight:800;color:var(--green)}
-.connected-count .label{font-size:12px;color:var(--text3)}
+.apps-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:12px;margin-top:16px}
+.app-card{display:flex;flex-direction:column;align-items:center;padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;transition:all .3s ease;position:relative;overflow:hidden}
+.app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent);opacity:0;transition:opacity .3s}
+.app-card:hover::before{opacity:1}
+.app-card:hover{background:rgba(255,255,255,0.05);transform:translateY(-3px);box-shadow:0 8px 30px var(--primary-glow)}
+.app-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg, rgba(255,26,26,0.15), rgba(255,26,26,0.05));display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.app-title{font-size:14px;font-weight:600;color:var(--text);text-align:center;margin-bottom:8px;}
+.app-desc{font-size:11px;color:var(--text3);text-align:center;line-height:1.3;}
 
-/* Download links */
-.app-list{display:flex;flex-direction:column;gap:8px}
-.app-category{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-top:8px;margin-bottom:4px}
-.app-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;transition:all .2s;text-decoration:none;color:inherit}
-.app-item:hover{border-color:var(--primary);transform:translateX(4px);box-shadow:0 2px 12px var(--primary-glow)}
-.app-item-left{display:flex;align-items:center;gap:10px}
-.app-item-icon{width:32px;height:32px;border-radius:8px;background:var(--primary-dim);display:flex;align-items:center;justify-content:center}
-.app-item-name{font-size:13px;font-weight:600}
-.app-item-desc{font-size:10px;color:var(--text3)}
-.app-item-arrow{color:var(--text3);transition:color .2s}
-.app-item:hover .app-item-arrow{color:var(--primary)}
+.back-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin:32px auto 0;padding:14px 28px;background:linear-gradient(135deg, var(--primary), #800000);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;transition:all .3s ease;position:relative;overflow:hidden}
+.back-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transition:left .6s}
+.back-btn:hover::before{left:100%}
+.back-btn:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 6px 25px var(--primary-glow)}
 
-.back-link{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;padding:10px;color:var(--text3);text-decoration:none;font-size:12px;font-weight:500;transition:color .2s}
-.back-link:hover{color:var(--primary)}
+.theme-nav{position:fixed;top:24px;right:24px;z-index:100;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px;display:flex;gap:10px;backdrop-filter:blur(20px);box-shadow:0 4px 20px rgba(0,0,0,0.4)}
+.theme-btn{width:32px;height:32px;border-radius:10px;cursor:pointer;transition:all .3s ease;position:relative}
+.theme-btn:hover{transform:scale(1.15);box-shadow:0 0 20px currentColor}
+.theme-btn.selected{border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 15px currentColor;}
+.theme-red{background:#ff1a1a;box-shadow:0 0 10px rgba(255,26,26,0.4)}
+.theme-green{background:#00ff88;box-shadow:0 0 10px rgba(0,255,136,0.4)}
+.theme-purple{background:#a855f7;box-shadow:0 0 10px rgba(168,85,247,0.4)}
+
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,0.5);z-index:1000;opacity:0;transform:translateY(20px);transition:all .3s cubic-bezier(.4,0,.2,1)}
+.toast.show{opacity:1;transform:translateY(0);animation:toastPulse 0.3s ease}
+@keyframes toastPulse{0%{box-shadow:0 0 0 rgba(255,255,255,0);}100%{box-shadow:0 0 20px var(--primary-glow)}}
+.toast.error{border-color:var(--red);color:var(--red)}
+
+.loading{animation:loadingPulse 1s infinite ease-in-out}
+@keyframes loadingPulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.glass-panel:nth-child(1){animation-delay:0.1s}
+.glass-panel:nth-child(2){animation-delay:0.2s}
+.glass-panel:nth-child(3){animation-delay:0.3s}
+.glass-panel:nth-child(4){animation-delay:0.4s}
 </style>
 </head>
 <body>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
-<div class="theme-picker">
-  <div class="theme-dot red sel" onclick="setTheme('dark')" title="Red Neon"></div>
-  <div class="theme-dot green" onclick="setTheme('light')" title="Ghost Neon"></div>
-  <div class="theme-dot purple" onclick="setTheme('purple')" title="Purple Neon"></div>
+<div class="theme-nav">
+  <div class="theme-btn theme-green selected" onclick="setTheme('light')" title="Ghost Neon"></div>
+  <div class="theme-btn theme-purple" onclick="setTheme('purple')" title="Purple Neon"></div>
 </div>
 
 <canvas id="galaxy" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
@@ -1514,9 +1520,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     <p>Subscription Information</p>
   </div>
 
-  <!-- Time Remaining -->
-  <div class="glass-card">
-    <div class="glass-card-title">
+  <div class="glass-panel">
+    <div class="panel-title">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       Time Remaining
     </div>
@@ -1529,19 +1534,18 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     <div class="expiry-date">Expires: <span id="expiry-date-text">--</span></div>
   </div>
 
-  <!-- Data Usage -->
-  <div class="glass-card">
-    <div class="glass-card-title">
+  <div class="glass-panel">
+    <div class="panel-title">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       Data Usage
     </div>
-    <div style="display:flex;align-items:center;gap:20px">
-      <div class="progress-ring-wrap">
-        <svg width="120" height="120" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="50" fill="none" stroke="var(--surface3)" stroke-width="8"/>
-          <circle id="progress-ring" cx="60" cy="60" r="50" fill="none" stroke="var(--primary)" stroke-width="8" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset 1s ease"/>
-          <text x="60" y="56" text-anchor="middle" fill="var(--text)" font-size="18" font-weight="700" id="progress-pct">0%</text>
-          <text x="60" y="72" text-anchor="middle" fill="var(--text3)" font-size="10">of limit</text>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="ring-wrap">
+        <svg width="160" height="160" viewBox="0 0 120 120" class="ring-svg">
+          <circle class="ring-bg" cx="60" cy="60" r="50" />
+          <circle id="progress-ring" class="ring-progress" cx="60" cy="60" r="50" />
+          <text x="60" y="56" class="ring-text" id="progress-pct">0%</text>
+          <text x="60" y="72" class="ring-subtext">of limit</text>
         </svg>
       </div>
       <div class="progress-info">
@@ -1552,171 +1556,344 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     </div>
   </div>
 
-  <!-- Connected Users -->
-  <div class="glass-card">
-    <div class="glass-card-title">
+  <div class="glass-panel">
+    <div class="panel-title">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
       Connected Users
     </div>
-    <div class="connected-count">
-      <div class="num" id="conn-count">0</div>
+    <div class="conn-box">
+      <div class="conn-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <div class="conn-number" id="conn-count">0</div>
       <div>
-        <div class="label">Currently connected</div>
-        <div style="font-size:10px;color:var(--text3)">Max: <span id="max-conn-text">Unlimited</span></div>
+        <div class="conn-label">Currently connected</div>
+        <div class="conn-detail">Max: <span id="max-conn-text">Unlimited</span></div>
       </div>
     </div>
   </div>
 
-  <!-- Client Downloads -->
-  <div class="glass-card">
-    <div class="glass-card-title">
+  <div class="glass-panel">
+    <div class="panel-title">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Download Client
     </div>
-    <div class="app-list">
-      <div class="app-category">Android</div>
-      <a class="app-item" href="https://github.com/2dust/v2rayNG/releases" target="_blank" rel="noopener">
-        <div class="app-item-left">
-          <div class="app-item-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M5 16V8a7 7 0 0114 0v8"/><rect x="1" y="16" width="22" height="4" rx="2"/></svg>
-          </div>
-          <div><div class="app-item-name">V2rayNG</div><div class="app-item-desc">Android VPN Client</div></div>
+    <div class="apps-grid">
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M5 16V8a7 7 0 0114 0v8"/><rect x="1" y="16" width="22" height="4" rx="2"/></svg>
         </div>
-        <svg class="app-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-      <a class="app-item" href="https://github.com/MatsuriDayo/NekoBoxForAndroid/releases" target="_blank" rel="noopener">
-        <div class="app-item-left">
-          <div class="app-item-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
-          </div>
-          <div><div class="app-item-name">NekoBox</div><div class="app-item-desc">Android VPN Client</div></div>
+        <div class="app-title">V2rayNG</div>
+        <div class="app-desc">Android VPN Client</div>
+      </div>
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
         </div>
-        <svg class="app-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-      <div class="app-category">iOS</div>
-      <a class="app-item" href="https://apps.apple.com/app/streisand/id6450534064" target="_blank" rel="noopener">
-        <div class="app-item-left">
-          <div class="app-item-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-          </div>
-          <div><div class="app-item-name">Streisand</div><div class="app-item-desc">iOS VPN Client</div></div>
+        <div class="app-title">NekoBox</div>
+        <div class="app-desc">Android VPN Client</div>
+      </div>
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
         </div>
-        <svg class="app-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-      <a class="app-item" href="https://apps.apple.com/app/shadowrocket/id932747118" target="_blank" rel="noopener">
-        <div class="app-item-left">
-          <div class="app-item-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          </div>
-          <div><div class="app-item-name">Shadowrocket</div><div class="app-item-desc">iOS VPN Client</div></div>
+        <div class="app-title">Streisand</div>
+        <div class="app-desc">iOS VPN Client</div>
+      </div>
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
-        <svg class="app-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-      <a class="app-item" href="https://apps.apple.com/app/v2box-v2ray-client/id6512947054" target="_blank" rel="noopener">
-        <div class="app-item-left">
-          <div class="app-item-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          </div>
-          <div><div class="app-item-name">V2Box</div><div class="app-item-desc">iOS VPN Client</div></div>
+        <div class="app-title">Shadowrocket</div>
+        <div class="app-desc">iOS VPN Client</div>
+      </div>
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         </div>
-        <svg class="app-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
+        <div class="app-title">V2Box</div>
+        <div class="app-desc">iOS VPN Client</div>
+      </div>
     </div>
   </div>
 
-  <a href="javascript:history.back()" class="back-link">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-    Back to panel
-  </a>
+  <button class="back-btn" onclick="window.location.href='/dashboard'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Dashboard
+  </button>
 </div>
 
 <script>
-const theme = localStorage.getItem('amir_theme') || 'dark';
-function setTheme(t) {document.documentElement.setAttribute('data-theme', t);localStorage.setItem('amir_theme', t);document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('sel'));if(t==='dark')document.querySelector('.red').classList.add('sel');if(t==='light')document.querySelector('.green').classList.add('sel');if(t==='purple')document.querySelector('.purple').classList.add('sel')}
-setTheme(theme);
+let lang = localStorage.getItem('amir_lang') || 'en';
+let theme = localStorage.getItem('amir_theme') || 'light';
+let statsData = {};
+const SUB_UID = window.location.pathname.split('/')[3] || 'test';
 
-let subData = null;
-async function loadSub() {
-  const pathParts = location.pathname.split('/');
-  const subUid = pathParts[pathParts.length - 1];
-  try {
-    const r = await fetch(`/api/links/${subUid}/sub`);
-    if (!r.ok) throw new Error();
-    subData = await r.json();
-    renderSub();
-    startCountdown();
-  } catch(e) {
-    document.querySelector('.container').innerHTML = '<div class="glass-card" style="text-align:center"><p style="color:var(--red)">Unable to load subscription data</p></div>';
+function setLang(l) {
+  lang = l;
+  document.body.dir = lang === 'fa' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const v = el.getAttribute('data-' + lang);
+    if (v) el.textContent = v;
+  });
+  localStorage.setItem('amir_lang', lang);
+  loadSubData();
+}
+
+function cycleLang() {
+  setLang(lang === 'en' ? 'fa' : 'en');
+}
+
+function applyTheme(t) {
+  theme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('amir_theme', t);
+  document.querySelectorAll('.theme-btn').forEach(d => {
+    d.classList.remove('selected');
+  });
+  
+  if (t === 'light') document.querySelector('.theme-btn.theme-green').classList.add('selected');
+  if (t === 'purple') document.querySelector('.theme-btn.theme-purple').classList.add('selected');
+}
+
+function toggleTheme() {
+  applyTheme(theme === 'light' ? 'purple' : 'light');
+}
+
+function setTheme(t) {
+  applyTheme(t);
+}
+
+applyTheme(theme);
+
+// Enhanced Galaxy Animation
+const canvas = document.getElementById('galaxy');
+const ctx = canvas.getContext('2d');
+
+let stars = [];
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function initStars() {
+  stars = [];
+  const count = Math.min(200, Math.floor((window.innerWidth * window.innerHeight) / 9000));
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      speed: Math.random() * 0.3 + 0.05,
+      flicker: Math.random() * Math.PI * 2,
+      opacity: Math.random() * 0.8 + 0.2
+    });
   }
 }
 
-function fmtBytes(b) {return b > 1073741824 ? (b/1073741824).toFixed(2)+' GB' : b > 1048576 ? (b/1048576).toFixed(2)+' MB' : (b/1024).toFixed(1)+' KB'}
+function drawGalaxy() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const time = Date.now() * 0.001;
+  
+  const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/1.5);
+  gradient.addColorStop(0, 'rgba(5, 5, 8, 0.8)');
+  gradient.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  stars.forEach(s => {
+    const alpha = s.opacity * (0.3 + 0.7 * Math.sin(time * s.speed + s.flicker));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+    ctx.fill();
+  });
+  
+  requestAnimationFrame(drawGalaxy);
+}
 
-function renderSub() {
-  if (!subData) return;
-  document.getElementById('used-val').textContent = fmtBytes(subData.used_bytes);
-  if (subData.limit_bytes > 0) {
-    document.getElementById('limit-val').textContent = '/ ' + fmtBytes(subData.limit_bytes);
-    document.getElementById('progress-pct').textContent = subData.usage_percent + '%';
-    const circumference = 314;
-    const offset = circumference - (subData.usage_percent / 100) * circumference;
-    document.getElementById('progress-ring').setAttribute('stroke-dashoffset', offset);
+resizeCanvas();
+initStars();
+drawGalaxy();
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  initStars();
+});
+
+function showToast(message, isError = false) {
+  const toast = document.getElementById('toast') || createToastElement();
+  toast.textContent = message;
+  toast.className = `toast ${isError ? 'error' : ''}`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function createToastElement() {
+  const toast = document.createElement('div');
+  toast.id = 'toast';
+  toast.className = 'toast';
+  document.body.appendChild(toast);
+  return toast;
+}
+
+function updateSubscriptionUI(subData, domainData) {
+  if (subData.expiry) {
+    const expiryDate = new Date(subData.expiry);
+    document.getElementById('expiry-date-text').textContent = expiryDate.toLocaleDateString();
   } else {
-    document.getElementById('limit-val').textContent = '/ Unlimited';
-    document.getElementById('progress-pct').textContent = '∞';
-    document.getElementById('progress-ring').setAttribute('stroke-dashoffset', 0);
-    document.getElementById('progress-ring').setAttribute('stroke', 'var(--green)');
+    document.getElementById('expiry-date-text').textContent = 'Never';
   }
-  document.getElementById('status-text').textContent = subData.active ? 'Active' : 'Disabled';
+  
+  const usedBytes = subData.used_bytes || 0;
+  const limitBytes = subData.limit_bytes || 0;
+  const usedMB = Math.round(usedBytes / (1024 * 1024) * 100) / 100;
+  const limitMB = limitBytes > 0 ? Math.round(limitBytes / (1024 * 1024) * 100) / 100 : 0;
+  
+  document.getElementById('used-val').textContent = usedMB > 0 ? usedMB + ' MB' : '0 MB';
+  document.getElementById('limit-val').textContent = limitMB > 0 ? '/ ' + limitMB + ' MB' : '/ Unlimited';
+  document.getElementById('status-text').textContent = subData.active ? 'Active' : 'Inactive';
   document.getElementById('status-text').style.color = subData.active ? 'var(--green)' : 'var(--red)';
+  
+  updateProgressCircle(usedBytes, limitBytes);
 }
 
-let expiryTimestamp = null;
-function startCountdown() {
-  const expiryStr = subData && subData.expiry;
-  if (!expiryStr) {
-    document.getElementById('expiry-date-text').textContent = 'Never';
+function updateConnectedUsers(current, max) {
+  const countElement = document.getElementById('conn-count');
+  const maxElement = document.getElementById('max-conn-text');
+  
+  if (countElement) {
+    countElement.textContent = current > 0 ? current : '0';
+    countElement.style.color = current > 0 ? 'var(--green)' : 'var(--text3)';
+  }
+  
+  if (maxElement) {
+    maxElement.textContent = max > 0 ? max : 'Unlimited';
+  }
+}
+
+function updateProgressCircle(usedBytes, limitBytes) {
+  const progressRing = document.getElementById('progress-ring');
+  const progressPct = document.getElementById('progress-pct');
+  
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  
+  let percentage = 0;
+  if (limitBytes > 0) {
+    percentage = Math.min((usedBytes / limitBytes) * 100, 100);
+  }
+  
+  progressRing.style.strokeDashoffset = circumference - (percentage / 100) * circumference;
+  
+  if (percentage > 90) {
+    progressRing.style.stroke = 'var(--red)';
+    progressPct.style.fill = 'var(--red)';
+  } else if (percentage > 70) {
+    progressRing.style.stroke = 'var(--yellow)';
+    progressPct.style.fill = 'var(--yellow)';
+  } else {
+    progressRing.style.stroke = 'var(--primary)';
+    progressPct.style.fill = 'var(--text)';
+  }
+  
+  progressPct.textContent = Math.round(percentage) + '%';
+}
+
+function updateCountdown(expiry) {
+  if (!expiry || expiry === '') {
+    document.getElementById('cd-days').textContent = '--';
+    document.getElementById('cd-hours').textContent = '--';
+    document.getElementById('cd-mins').textContent = '--';
+    document.getElementById('cd-secs').textContent = '--';
     return;
   }
-  expiryTimestamp = new Date(expiryStr).getTime();
-  document.getElementById('expiry-date-text').textContent = new Date(expiryStr).toLocaleDateString();
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-}
-
-function updateCountdown() {
-  if (!expiryTimestamp) return;
-  const now = Date.now();
-  const diff = expiryTimestamp - now;
+  
+  const expiryDate = new Date(expiry);
+  const now = new Date();
+  const diff = expiryDate - now;
+  
   if (diff <= 0) {
     document.getElementById('cd-days').textContent = '0';
     document.getElementById('cd-hours').textContent = '0';
     document.getElementById('cd-mins').textContent = '0';
     document.getElementById('cd-secs').textContent = '0';
-    document.getElementById('expiry-date-text').innerHTML = '<span style="color:var(--red)">Expired</span>';
     return;
   }
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  const mins = Math.floor((diff % 3600000) / 60000);
-  const secs = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-days').textContent = days;
-  document.getElementById('cd-hours').textContent = hours;
-  document.getElementById('cd-mins').textContent = mins;
-  document.getElementById('cd-secs').textContent = secs;
+  
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((diff % (1000 * 60)) / 1000);
+  
+  document.getElementById('cd-days').textContent = days > 0 ? days : '0';
+  document.getElementById('cd-hours').textContent = hours > 0 || days > 0 ? String(hours).padStart(2, '0') : '--';
+  document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+  document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
 }
 
-// Galaxy background
-const canvas = document.getElementById('galaxy');
-const gctx = canvas.getContext('2d');
-let stars = [];
-function resizeCanvas() {canvas.width = window.innerWidth;canvas.height = window.innerHeight}
-function initStars() {stars = [];for(let i = 0; i < 120; i++) stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.3,speed:Math.random()*0.2+0.05,flicker:Math.random()*Math.PI*2})}
-function drawGalaxy() {gctx.clearRect(0,0,canvas.width,canvas.height);const t=Date.now()*0.001;stars.forEach(s=>{const alpha=0.2+0.3*Math.sin(t*s.speed+s.flicker);gctx.beginPath();gctx.arc(s.x,s.y,s.r,0,Math.PI*2);gctx.fillStyle='rgba(255,255,255,'+alpha+')';gctx.fill()});requestAnimationFrame(drawGalaxy)}
-resizeCanvas();initStars();drawGalaxy();window.addEventListener('resize',()=>{resizeCanvas();initStars()});
+function setDefaultValues() {
+  document.getElementById('expiry-date-text').textContent = '--';
+  document.getElementById('progress-pct').textContent = '0%';
+  document.getElementById('used-val').textContent = '0 MB';
+  document.getElementById('limit-val').textContent = '/ Unlimited';
+  document.getElementById('status-text').textContent = 'Unknown';
+  document.getElementById('status-text').style.color = 'var(--text2)';
+  document.getElementById('conn-count').textContent = '0';
+  document.getElementById('max-conn-text').textContent = 'Unlimited';
+  updateProgressCircle(0, 0);
+}
 
-loadSub();
-setInterval(() => {loadSub()}, 30000);
+function getPrimaryColor() {
+  const t = theme;
+  if (t === 'dark') return { bg: 'rgba(255,26,_score0,26,0.7)', border: '#ff1a1a' };
+  if (t === 'light') return { bg: 'rgba(0,255,136,0.7)', border: '#00ff88' };
+  return { bg: 'rgba(168,85,247,0.7)', border: '#a855f7' };
+}
+
+async function loadSubData() {
+  showToast('Loading subscription...', false);
+  try {
+    const [subRes, domainRes, statsRes] = await Promise.all([
+      fetch(`/api/links/${SUB_UID}/sub`),
+      fetch('/api/domain'),
+      fetch('/stats')
+    ]);
+    
+    if (!subRes.ok) throw new Error('Subscription not found');
+    
+    const subData = await subRes.json();
+    const domainData = await domainRes.json();
+    statsData = await statsRes.json();
+    
+    updateSubscriptionUI(subData, domainData);
+    updateCountdown(subData.expiry);
+    updateConnectedUsers(subData.current_connections, subData.max_connections);
+    
+    showToast('Subscription loaded', false);
+  } catch (error) {
+    showToast('Failed to load subscription data', true);
+    console.error('Error loading subscription data:', error);
+    setDefaultValues();
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadSubData();
+  
+  const cards = document.querySelectorAll('.glass-panel');
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.boxShadow = '0 15px 60px var(--primary-glow)';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.boxShadow = '';
+    });
+  });
+});
+
+setInterval(() => {
+  loadSubData();
+}, 30000);
 </script>
 </body>
 </html>"""
