@@ -437,8 +437,16 @@ async def get_subscription(uid: str, _=Depends(require_auth)):
     }
 
 
-@app.get("/sub/{uid}")
-async def subscription_endpoint(uid: str):
+@app.get("/sub/{uid}", response_class=HTMLResponse)
+async def subscription_page(request: Request, uid: str):
+    async with LINKS_LOCK:
+        link = LINKS.get(uid)
+        if link is None:
+            raise HTTPException(status_code=404, detail="link not found")
+    return HTMLResponse(content=SUB_HTML)
+
+@app.get("/api/sub/{uid}")
+async def subscription_download(uid: str):
     import base64
     async with LINKS_LOCK:
         link = LINKS.get(uid)
@@ -704,72 +712,65 @@ LOGIN_HTML = r"""<!DOCTYPE html>
   <div class="login-page">
     <div class="login-card" id="login-card">
       <div class="brand">
-        <svg width="100" height="90" viewBox="0 0 200 180" fill="none">
+        <svg width="110" height="110" viewBox="0 0 120 120" style="border-radius:24px;overflow:hidden;filter:drop-shadow(0 0 24px var(--primary-glow))">
           <defs>
-            <linearGradient id="amir-g" x1="0" y1="0" x2="200" y2="180">
-              <stop stop-color="#ff1a1a"/><stop offset="1" stop-color="#dc2626"/>
+            <linearGradient id="amir-g" x1="0" y1="0" x2="120" y2="120">
+              <stop stop-color="#ff1a1a"/><stop offset="1" stop-color="#7f1d1d"/>
             </linearGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           </defs>
-          <!-- Outer glow ring -->
-          <circle cx="100" cy="60" r="48" fill="none" stroke="var(--primary)" stroke-width="0.8" opacity="0.3">
-            <animateTransform attributeName="transform" type="rotate" from="0 100 60" to="360 100 60" dur="20s" repeatCount="indefinite"/>
+          <rect width="120" height="120" rx="24" fill="url(#amir-g)"/>
+          <!-- Rotating circle -->
+          <circle cx="60" cy="52" r="30" fill="none" stroke="#fff" stroke-width="0.6" opacity="0.2">
+            <animateTransform attributeName="transform" type="rotate" from="0 60 52" to="360 60 52" dur="20s" repeatCount="indefinite"/>
           </circle>
-          <!-- Inner ring -->
-          <circle cx="100" cy="60" r="38" fill="none" stroke="var(--primary)" stroke-width="0.5" opacity="0.2">
-            <animateTransform attributeName="transform" type="rotate" from="360 100 60" to="0 100 60" dur="15s" repeatCount="indefinite"/>
-          </circle>
-          <!-- AMIR text - first state -->
-          <g>
-            <text x="100" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="26" font-weight="800" fill="#fff" opacity="0.9">
+          <!-- AMIR text with 3D flip to VPN -->
+          <g filter="url(#glow)">
+            <text x="60" y="48" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="900" fill="#fff">
               AMIR
-              <animate attributeName="opacity" values="0.9;0.9;0;0;0.9" dur="5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="1,1,0,0,1" dur="6s" repeatCount="indefinite"/>
             </text>
-            <!-- 3D depth -->
-            <text x="102" y="52" text-anchor="middle" font-family="Inter, sans-serif" font-size="26" font-weight="800" fill="var(--primary)" opacity="0.3">
+            <text x="61.5" y="49.5" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="900" fill="rgba(255,255,255,0.15)">
               AMIR
-              <animate attributeName="opacity" values="0.3;0.3;0;0;0.3" dur="5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.15,0.15,0,0,0.15" dur="6s" repeatCount="indefinite"/>
+            </text>
+            <text x="60" y="48" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="900" fill="#fff">
+              VPN
+              <animate attributeName="opacity" values="0,0,1,1,0" dur="6s" repeatCount="indefinite"/>
+            </text>
+            <text x="61.5" y="49.5" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="900" fill="rgba(255,255,255,0.15)">
+              VPN
+              <animate attributeName="opacity" values="0,0,0.15,0.15,0" dur="6s" repeatCount="indefinite"/>
             </text>
           </g>
-          <!-- VPN text - second state -->
-          <g>
-            <text x="100" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="26" font-weight="800" fill="#fff" opacity="0">
-              VPN
-              <animate attributeName="opacity" values="0;0;0.9;0.9;0" dur="5s" repeatCount="indefinite"/>
-            </text>
-            <text x="102" y="52" text-anchor="middle" font-family="Inter, sans-serif" font-size="26" font-weight="800" fill="var(--primary)" opacity="0">
-              VPN
-              <animate attributeName="opacity" values="0;0;0.3;0.3;0" dur="5s" repeatCount="indefinite"/>
-            </text>
-          </g>
-          <!-- Network nodes -->
-          <circle cx="100" cy="60" r="2" fill="#fff" opacity="0.9">
+          <!-- Center node -->
+          <circle cx="60" cy="52" r="2" fill="#fff" opacity="0.8">
             <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2s" repeatCount="indefinite"/>
           </circle>
           <!-- Orbiting dots -->
-          <circle cx="100" cy="18" r="3" fill="var(--primary)" opacity="0.8">
-            <animateTransform attributeName="transform" type="rotate" from="0 100 60" to="360 100 60" dur="6s" repeatCount="indefinite"/>
+          <circle cx="60" cy="22" r="2.5" fill="#fff" opacity="0.7">
+            <animateTransform attributeName="transform" type="rotate" from="0 60 52" to="360 60 52" dur="5s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="148" cy="60" r="2.5" fill="#fff" opacity="0.7">
-            <animateTransform attributeName="transform" type="rotate" from="120 100 60" to="480 100 60" dur="8s" repeatCount="indefinite"/>
+          <circle cx="90" cy="52" r="2" fill="#fff" opacity="0.5">
+            <animateTransform attributeName="transform" type="rotate" from="120 60 52" to="480 60 52" dur="7s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="52" cy="60" r="2.5" fill="#fff" opacity="0.7">
-            <animateTransform attributeName="transform" type="rotate" from="240 100 60" to="600 100 60" dur="8s" repeatCount="indefinite"/>
+          <circle cx="30" cy="52" r="2" fill="#fff" opacity="0.5">
+            <animateTransform attributeName="transform" type="rotate" from="240 60 52" to="600 60 52" dur="7s" repeatCount="indefinite"/>
           </circle>
-          <!-- Subtitle text -->
-          <text x="100" y="85" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="700" fill="var(--text3)" letter-spacing="0.2em">SECURE TUNNEL</text>
-          <!-- Bottom decorative dots -->
-          <circle cx="65" cy="105" r="3" fill="var(--primary)" opacity="0.6">
-            <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" repeatCount="indefinite"/>
+          <!-- Bottom label -->
+          <text x="60" y="78" text-anchor="middle" font-family="Inter, sans-serif" font-size="7" font-weight="700" fill="rgba(255,255,255,0.5)" letter-spacing="0.25em">SECURE VPN</text>
+          <!-- Bottom network bar -->
+          <circle cx="32" cy="100" r="3" fill="#fff" opacity="0.5">
+            <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3s" repeatCount="indefinite"/>
           </circle>
-          <line x1="68" y1="105" x2="95" y2="105" stroke="var(--primary)" stroke-width="1" opacity="0.3">
-            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
-          </line>
-          <circle cx="100" cy="105" r="3" fill="#fff" opacity="0.8">
+          <line x1="35" y1="100" x2="55" y2="100" stroke="#fff" stroke-width="0.8" opacity="0.3"/>
+          <circle cx="60" cy="100" r="3" fill="#fff" opacity="0.8">
             <animate attributeName="r" values="3;4;3" dur="2.5s" repeatCount="indefinite"/>
           </circle>
-          <line x1="103" y1="105" x2="130" y2="105" stroke="var(--primary)" stroke-width="1" opacity="0.3">
-            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+          <line x1="63" y1="100" x2="85" y2="100" stroke="#fff" stroke-width="0.8" opacity="0.3"/>
+          <circle cx="88" cy="100" r="3" fill="#fff" opacity="0.5">
+            <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+          </circle>
           </line>
           <circle cx="135" cy="105" r="3" fill="var(--primary)" opacity="0.6">
             <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" begin="1s" repeatCount="indefinite"/>
@@ -1072,14 +1073,7 @@ body[dir="rtl"]{direction:rtl;text-align:right}
       <span data-en="Inbounds" data-fa="اینباندها">Inbounds</span>
       <span class="nav-badge" id="links-badge">0</span>
     </button>
-    <button class="nav-item" data-page="traffic">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span data-en="Traffic" data-fa="ترافیک">Traffic</span>
-    </button>
-    <button class="nav-item" data-page="addresses">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-      <span data-en="Clean IP" data-fa="آی‌پی تمیز">Clean IP</span>
-    </button>
+
     <button class="nav-item" data-page="domain">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
       <span data-en="Domain" data-fa="دامنه">Domain</span>
@@ -1221,17 +1215,7 @@ body[dir="rtl"]{direction:rtl;text-align:right}
     </div>
   </section>
 
-  <section class="page" id="page-traffic">
-    <div class="page-header"><div><div class="page-title">Traffic</div><div class="page-sub">Traffic statistics</div></div></div>
-    <div class="card">
-      <div class="card-header"><div class="card-title">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Overview</div></div>
-      <div class="status-item"><span class="status-key"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Total Traffic</span><span class="status-val" id="t-traffic">-- MB</span></div>
-      <div class="status-item"><span class="status-key"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Total Requests</span><span class="status-val" id="t-reqs">--</span></div>
-      <div class="status-item"><span class="status-key"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Uptime</span><span class="status-val" id="t-uptime">--</span></div>
-    </div>
-  </section>
+
 
   <section class="page" id="page-addresses">
     <div class="page-header">
@@ -1501,7 +1485,8 @@ function renderLinks(links){
       <button class="btn-copy" onclick="copyLinkText('${esc(r.l.vless_link)}')" title="Copy">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
       </button>
-      <button class="btn-copy" onclick="copySubLink('${r.l.uuid}')" title="Sub" style="background:var(--green-dim);color:var(--green);border:1px solid rgba(0,255,136,0.15)">s</button>
+      <button class="btn-copy" onclick="copySubLink('${r.l.uuid}')" title="Copy Sub URL" style="background:var(--green-dim);color:var(--green);border:1px solid rgba(0,255,136,0.15)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></button>
+      <button class="btn-copy" onclick="openSubPage('${r.l.uuid}')" title="Open Sub Page" style="background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>
       <button class="btn-qr" onclick="showQRText('${esc(r.l.vless_link)}')" title="QR">qr</button>
       <button class="btn btn-danger btn-sm" onclick="deleteLink('${r.l.uuid}')" title="Delete">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
@@ -1523,7 +1508,8 @@ function renderLinks(links){
     <div class="inbound-card-actions">
       <button class="btn btn-secondary btn-sm" onclick="showEditModal('${r.l.uuid}')" style="background:rgba(251,191,36,0.1);color:var(--yellow);border:1px solid rgba(251,191,36,0.2)">e</button>
       <button class="btn-copy" onclick="copyAllConfigs('${r.l.uuid}')">c</button>
-      <button class="btn-copy" onclick="copySubLink('${r.l.uuid}')" style="background:var(--green-dim);color:var(--green);border:1px solid rgba(0,255,136,0.15)">s</button>
+      <button class="btn-copy" onclick="copySubLink('${r.l.uuid}')" style="background:var(--green-dim);color:var(--green);border:1px solid rgba(0,255,136,0.15)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></button>
+      <button class="btn-copy" onclick="openSubPage('${r.l.uuid}')" style="background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>
       <button class="btn-qr" onclick="showQRText('${esc(r.l.vless_link)}')">qr</button>
       <button class="btn btn-danger btn-sm" onclick="deleteLink('${r.l.uuid}')">x</button>
     </div>
@@ -1551,7 +1537,8 @@ function showDetail(uid){const l=allLinks.find(x=>x.uuid===uid);if(!l)return;con
     <div class="detail-actions">
       <button class="btn-copy" onclick="copyAllConfigs('${l.uuid}');$('#detail-modal').classList.remove('show')" style="padding:8px 18px;font-size:12px">Copy All</button>
       <button class="btn-qr" onclick="showQRText('${esc(l.vless_link)}');$('#detail-modal').classList.remove('show')" style="padding:8px 18px;font-size:12px">QR Code</button>
-      <button class="btn btn-secondary btn-sm" onclick="copySubLink('${l.uuid}')" style="padding:8px 18px;font-size:12px">Subscription URL</button>
+      <button class="btn btn-secondary btn-sm" onclick="copySubLink('${l.uuid}')" style="padding:8px 18px;font-size:12px">Copy Sub URL</button>
+      <button class="btn btn-secondary btn-sm" onclick="openSubPage('${l.uuid}')" style="padding:8px 18px;font-size:12px;background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)">Open Sub Page</button>
       <button class="btn btn-secondary btn-sm" onclick="resetUsage('${l.uuid}');$('#detail-modal').classList.remove('show')" style="padding:8px 18px">Reset Traffic</button>
     </div>`;
   $('#detail-modal').classList.add('show');
@@ -1560,7 +1547,7 @@ function showDetail(uid){const l=allLinks.find(x=>x.uuid===uid);if(!l)return;con
 function copyLinkText(txt){navigator.clipboard.writeText(txt).then(()=>toast('Copied to clipboard')).catch(()=>toast('Failed to copy',true))}
 function showQRText(txt){if(!txt)return;const box=document.querySelector('.qr-box');box.classList.remove('animate-in','animate-glow');$('#qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(txt);$('#qr-modal').classList.add('show');requestAnimationFrame(()=>{box.classList.add('animate-in');setTimeout(()=>box.classList.add('animate-glow'),500)})}
 function downloadQR(){const img=$('#qr-img');if(!img.src)return;const a=document.createElement('a');a.href=img.src;a.download='amir-vpn-qr.png';a.click()}
-async function copySubLink(uid){try{const domain=location.host;const subUrl=`https://${domain}/sub/${uid}`;await navigator.clipboard.writeText(subUrl);toast('Subscription URL copied');}catch(e){toast('Failed to copy',true)}}
+async function copySubLink(uid){try{const domain=location.host;const subUrl=`https://${domain}/sub/${uid}`;await navigator.clipboard.writeText(subUrl);toast('Subscription page URL copied');}catch(e){toast('Failed to copy',true)}}function openSubPage(uid){const domain=location.host;window.open(`https://${domain}/sub/${uid}`,'_blank')}
 
 async function changePassword(){const cur=$('#cur-pw').value;const nw=$('#new-pw').value;if(!cur||!nw){toast('Fill all fields',true);return;}try{const r=await fetch('/api/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({current_password:cur,new_password:nw})});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.detail||'Error');}toast('Updated');$('#cur-pw').value='';$('#new-pw').value='';}catch(e){toast(e.message,true)}}
 
