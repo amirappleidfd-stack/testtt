@@ -1400,21 +1400,6 @@ async function loadDomain(){try{const r=await fetch('/api/domain');if(!r.ok)thro
 async function saveDomain(){const domain=$('#domain-input').value.trim();if(!domain){toast('Enter a domain',true);return;}try{const r=await fetch('/api/domain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({domain})});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.detail||'Error');}toast('Domain saved');$('#domain-input').value='';await loadDomain();await loadLinks();}catch(e){toast(e.message,true)}}
 async function clearDomain(){try{await fetch('/api/domain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({domain:''})});toast('Domain cleared');await loadDomain();await loadLinks();}catch(e){toast('Error',true)}}
 
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">
-      <div style="display:flex;align-items:center;gap:10px">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text)">${esc(a)}</div>
-          <div style="font-size:10px;color:var(--text3)">Address #${i+1}</div>
-        </div>
-      </div>
-      <button class="btn btn-danger btn-sm" onclick="deleteAddress(${i})" style="padding:4px 10px">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  `).join('');}
-
-
 let chartLabels=[];let chartData=[];
 function getPrimaryColor(){const t=theme;if(t==='dark')return{bg:'rgba(255,26,26,0.7)',border:'#ff1a1a'};if(t==='light')return{bg:'rgba(0,255,136,0.7)',border:'#00ff88'};return{bg:'rgba(168,85,247,0.7)',border:'#a855f7'};}
 function initChart(){const ctx=document.getElementById('trafficChart');if(!ctx)return;const c=getPrimaryColor();trafficChart=new Chart(ctx,{type:'bar',data:{labels:[],datasets:[{label:'MB',data:[],backgroundColor:c.bg,borderColor:c.border,borderWidth:1,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'rgba(255,255,255,0.3)',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'rgba(255,255,255,0.3)',font:{size:10},callback:v=>v+' MB'},beginAtZero:true}}}});}
