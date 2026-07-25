@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ورود · Spider Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --spider-blue: #2B7FFF;
+  --spider-purple: #7B61FF;
+  --spider-red: #FF2352;
+  --spider-success: #16A34A;
+  --spider-warning: #F59E0B;
+  --spider-danger: #DC2626;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --border: #E2E8F0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+  --shadow-glow: 0 0 60px rgba(43,127,255,.15), 0 0 120px rgba(123,97,255,.08);
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 28px;
+}
+[data-theme="dark"] {
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --bg: #0B1121;
+  --surface: rgba(15,23,42,.8);
+  --border: rgba(226,232,240,.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.4);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,.5);
+  --shadow-glow: 0 0 80px rgba(43,127,255,.2), 0 0 160px rgba(123,97,255,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;transition:background .4s ease}
+
+/* Background layers */
+.bg-layer{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg-orbs{position:absolute;inset:0}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;animation:float 12s ease-in-out infinite}
+.orb-1{width:500px;height:500px;background:var(--spider-blue);top:-200px;left:-100px;opacity:.18}
+.orb-2{width:400px;height:400px;background:var(--spider-purple);bottom:-150px;right:-120px;opacity:.14;animation-delay:-6s}
+.orb-3{width:350px;height:350px;background:var(--spider-red);top:40%;right:30%;opacity:.08;animation-delay:-3s}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}33%{transform:translateY(-30px) scale(1.05)}66%{transform:translateY(20px) scale(.95)}}
+
+/* Grid / Space web pattern */
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(43,127,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(43,127,255,.04) 1px,transparent 1px);background-size:50px 50px;z-index:0;opacity:.6}
+[data-theme="dark"] .grid-bg{background-image:linear-gradient(rgba(43,127,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(43,127,255,.06) 1px,transparent 1px);opacity:.8}
+
+/* Particles */
+.particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+.particle{position:absolute;border-radius:50%;animation:drift linear infinite;opacity:0}
+.particle:nth-child(1){width:3px;height:3px;background:var(--spider-blue);top:20%;left:15%;animation-duration:14s;opacity:.5}
+.particle:nth-child(2){width:2px;height:2px;background:var(--spider-purple);top:60%;left:25%;animation-duration:18s;animation-delay:-5s;opacity:.4}
+.particle:nth-child(3){width:4px;height:4px;background:var(--spider-red);top:30%;left:70%;animation-duration:16s;animation-delay:-8s;opacity:.35}
+.particle:nth-child(4){width:2px;height:2px;background:var(--spider-blue);top:75%;left:55%;animation-duration:20s;animation-delay:-2s;opacity:.45}
+.particle:nth-child(5){width:3px;height:3px;background:var(--spider-purple);top:10%;left:45%;animation-duration:15s;animation-delay:-11s;opacity:.3}
+.particle:nth-child(6){width:2px;height:2px;background:var(--spider-red);top:85%;left:80%;animation-duration:22s;animation-delay:-7s;opacity:.4}
+.particle:nth-child(7){width:3px;height:3px;background:var(--spider-blue);top:45%;left:35%;animation-duration:17s;animation-delay:-4s;opacity:.35}
+.particle:nth-child(8){width:2px;height:2px;background:var(--spider-purple);top:55%;left:65%;animation-duration:19s;animation-delay:-9s;opacity:.3}
+@keyframes drift{0%{transform:translate(0,0) scale(1);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translate(60px,-80px) scale(.3);opacity:0}}
+
+/* Dark mode: Hex grid / cyberpunk space */
+.hex-grid{position:fixed;inset:0;z-index:0;opacity:0;pointer-events:none;transition:opacity .5s ease}
+[data-theme="dark"] .hex-grid{opacity:.7}
+.hex-canvas{width:100%;height:100%;display:block}
+
+/* Login Card - Glassmorphism */
+.login-wrap{position:relative;z-index:10;width:100%;max-width:440px}
+.login-card{
+  background:rgba(255,255,255,.8);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:var(--radius-xl);
+  padding:44px 36px 38px;
+  box-shadow:var(--shadow-lg),var(--shadow-glow);
+  position:relative;overflow:hidden;
+  transition:all .3s ease;
+}
+[data-theme="dark"] .login-card{
+  background:rgba(15,23,42,.75);
+  border-color:rgba(255,255,255,.06);
+  box-shadow:var(--shadow-lg), 0 0 80px rgba(43,127,255,.15), 0 0 160px rgba(123,97,255,.08);
+}
+.login-card::before{
+  content:'';position:absolute;top:0;right:0;width:200px;height:200px;
+  background:radial-gradient(circle,rgba(43,127,255,.08),transparent 70%);
+  pointer-events:none
+}
+.login-card::after{
+  content:'';position:absolute;bottom:0;left:0;width:180px;height:180px;
+  background:radial-gradient(circle,rgba(123,97,255,.08),transparent 70%);
+  pointer-events:none
+}
+
+/* Spider Logo */
+.spider-logo{display:flex;align-items:center;justify-content:center;margin-bottom:28px;position:relative;z-index:1}
+.spider-svg{width:80px;height:80px;filter:drop-shadow(0 4px 12px rgba(43,127,255,.3))}
+.spider-body{fill:url(#spider-body-grad)}
+.spider-leg{fill:none;stroke:url(#spider-leg-grad);stroke-width:3;stroke-linecap:round;animation:legPulse 2s ease-in-out infinite}
+.spider-leg:nth-child(even){animation-delay:-1s}
+@keyframes legPulse{0%,100%{stroke-width:3}50%{stroke-width:4.5}}
+
+/* Login Title */
+.login-title{text-align:center;font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:-.02em;position:relative;z-index:1}
+.login-title .gradient-text{background:linear-gradient(90deg,var(--spider-blue),var(--spider-purple),var(--spider-red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Subtitle */
+.login-sub{text-align:center;font-size:13px;color:var(--text-secondary);margin-bottom:28px;position:relative;z-index:1;line-height:1.6}
+
+/* Form fields */
+.field-group{position:relative;z-index:1;margin-bottom:20px}
+.field-label{font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.field-label i{font-size:13px;color:var(--spider-purple)}
+.input-wrap{position:relative}
+.input-wrap input{
+  width:100%;padding:14px 48px 14px 48px;
+  border-radius:var(--radius);
+  border:1.5px solid var(--border);
+  background:rgba(255,255,255,.6);
+  backdrop-filter:blur(8px);
+  color:var(--text-primary);
+  font-family:'Vazirmatn',sans-serif;font-size:14px;outline:none;
+  transition:all .3s ease
+}
+[data-theme="dark"] .input-wrap input{background:rgba(15,23,42,.6);color:var(--text-primary)}
+.input-wrap input:focus{border-color:var(--spider-blue);background:rgba(255,255,255,.9);box-shadow:0 0 0 4px rgba(43,127,255,.1)}
+[data-theme="dark"] .input-wrap input:focus{background:rgba(15,23,42,.8);box-shadow:0 0 0 4px rgba(43,127,255,.15)}
+.input-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:18px;pointer-events:none;transition:color .3s}
+input:focus ~ .input-icon{color:var(--spider-blue)}
+.eye-toggle{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:17px;padding:6px;display:flex;align-items:center;transition:color .3s;border-radius:8px}
+.eye-toggle:hover{color:var(--spider-purple);background:rgba(123,97,255,.08)}
+
+/* Error */
+.error-msg{display:none;align-items:center;gap:8px;background:rgba(255,35,82,.08);border:1px solid rgba(255,35,82,.2);border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:18px;color:var(--spider-danger);font-size:12px;position:relative;z-index:1}
+.error-msg.show{display:flex}
+.error-msg i{font-size:16px;flex-shrink:0}
+
+/* Hint */
+.login-hint{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(43,127,255,.06);border:1px solid rgba(43,127,255,.15);border-radius:var(--radius-sm);padding:11px 16px;margin-bottom:20px;position:relative;z-index:1}
+.hint-label{font-size:11px;color:var(--text-secondary);font-weight:500}
+.hint-value{font-family:'Inter',monospace;font-size:14px;font-weight:700;color:var(--spider-blue);background:rgba(43,127,255,.1);border:1px solid rgba(43,127,255,.2);padding:4px 14px;border-radius:10px;cursor:pointer;transition:all .2s ease;letter-spacing:.06em}
+.hint-value:hover{background:rgba(43,127,255,.18);transform:translateY(-1px)}
+
+/* Submit button */
+.login-btn{
+  width:100%;height:60px;border:none;border-radius:var(--radius);
+  cursor:pointer;position:relative;z-index:1;
+  font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:700;color:#fff;
+  overflow:hidden;transition:all .3s ease;
+  display:flex;align-items:center;justify-content:center;gap:8px
+}
+.login-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--spider-blue),var(--spider-purple),var(--spider-red));transition:opacity .3s}
+.login-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--spider-red),var(--spider-purple),var(--spider-blue));opacity:0;transition:opacity .3s}
+.login-btn:hover::after{opacity:1}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(43,127,255,.3),0 4px 12px rgba(123,97,255,.2)}
+.login-btn:active{transform:translateY(0) scale(.98)}
+.login-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.login-btn span{position:relative;z-index:1;display:flex;align-items:center;gap:8px}
+
+/* Loading spinner */
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.btn-loading .spinner{display:inline-block}
+.btn-loading .btn-text{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Footer */
+.login-footer{text-align:center;margin-top:24px;position:relative;z-index:1;font-size:11px;color:var(--text-secondary)}
+.login-footer .dot{width:5px;height:5px;border-radius:50%;background:var(--spider-purple);display:inline-block;margin:0 6px}
+
+/* Theme toggle */
+.theme-toggle{
+  position:fixed;top:20px;left:20px;z-index:100;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--surface);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;color:var(--text-secondary);
+  transition:all .3s ease;box-shadow:var(--shadow-md)
+}
+.theme-toggle:hover{transform:scale(1.1);background:rgba(43,127,255,.1);color:var(--spider-blue);border-color:rgba(43,127,255,.2)}
+[data-theme="dark"] .theme-toggle{background:rgba(15,23,42,.8);box-shadow:var(--shadow-md),0 0 20px rgba(43,127,255,.1)}
+
+/* Version badge */
+.version-badge{
+  position:fixed;bottom:20px;left:20px;z-index:100;
+  background:var(--surface);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--border);
+  padding:8px 14px;border-radius:30px;
+  font-size:11px;font-weight:600;color:var(--text-secondary);
+  box-shadow:var(--shadow-md)
+}
+.version-badge span{color:var(--spider-blue)}
+
+/* Responsive */
+@media(max-width:480px){
+  .login-card{padding:32px 24px 30px}
+  .login-title{font-size:24px}
+  .spider-svg{width:64px;height:64px}
+  .theme-toggle{top:12px;left:12px;width:40px;height:40px}
+  .version-badge{bottom:12px;left:12px;padding:6px 12px}
+}
+</style>
+</head>
+<body data-theme="light">
+<!-- Background Layers -->
+<div class="bg-layer">
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+</div>
+<div class="grid-bg"></div>
+<canvas class="hex-grid" id="hexGrid"></canvas>
+<div class="particles">
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div>
+</div>
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" id="themeToggle" title="تغییر تم" aria-label="Toggle theme">☀️</button>
+
+<!-- Version Badge -->
+<div class="version-badge">v4.0 <span>Spider Panel</span></div>
+
+<!-- Login Form -->
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="spider-logo">
+      <svg class="spider-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="spider-body-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2B7FFF"/>
+            <stop offset="50%" style="stop-color:#7B61FF"/>
+            <stop offset="100%" style="stop-color:#FF2352"/>
+          </linearGradient>
+          <linearGradient id="spider-leg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2B7FFF"/>
+            <stop offset="100%" style="stop-color:#7B61FF"/>
+          </linearGradient>
+        </defs>
+        <!-- Legs -->
+        <path class="spider-leg" d="M50,50 L10,15"/>
+        <path class="spider-leg" d="M50,50 L15,50"/>
+        <path class="spider-leg" d="M50,50 L10,85"/>
+        <path class="spider-leg" d="M50,50 L90,15"/>
+        <path class="spider-leg" d="M50,50 L85,50"/>
+        <path class="spider-leg" d="M50,50 L90,85"/>
+        <path class="spider-leg" d="M50,50 L30,5"/>
+        <path class="spider-leg" d="M50,50 L70,5"/>
+        <!-- Body -->
+        <ellipse class="spider-body" cx="50" cy="46" rx="18" ry="22"/>
+        <!-- Head -->
+        <ellipse class="spider-body" cx="50" cy="23" rx="12" ry="10"/>
+        <!-- Eyes -->
+        <circle cx="44" cy="20" r="3" fill="#fff"/>
+        <circle cx="56" cy="20" r="3" fill="#fff"/>
+        <circle cx="44.5" cy="19.5" r="1.2" fill="#1a1a2e"/>
+        <circle cx="56.5" cy="19.5" r="1.2" fill="#1a1a2e"/>
+      </svg>
+    </div>
+    <div class="login-title">
+      <span class="gradient-text">SPIDER PANEL</span>
+    </div>
+    <div class="login-sub">
+      به پنل مدیریت خوش آمدید<br>
+      برای ادامه رمز عبور را وارد کنید
+    </div>
+    <div class="error-msg" id="err"><i class="ti ti-alert-circle"></i><span id="err-text"></span></div>
+    <div class="login-hint">
+      <span class="hint-label">🔑 رمز پیش‌فرض</span>
+      <span class="hint-value" onclick="document.getElementById('pw').value='123456';document.getElementById('pw').focus()">123456</span>
+    </div>
+    <form id="form">
+      <div class="field-group">
+        <div class="field-label"><i class="ti ti-lock"></i> رمز عبور</div>
+        <div class="input-wrap">
+          <input type="password" id="pw" placeholder="••••••••" autofocus required>
+          <i class="ti ti-lock input-icon"></i>
+          <button type="button" class="eye-toggle" id="eye-btn" title="نمایش رمز">
+            <i class="ti ti-eye"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="login-btn" id="btn">
+        <span class="spinner"></span>
+        <span class="btn-text"><i class="ti ti-login-2"></i> ورود به داشبورد</span>
+      </button>
+    </form>
+    <div class="login-footer">
+      <span class="dot"></span>
+      Spider Gateway · Spider Panel
+      <span class="dot"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var d=document.documentElement;
+  var saved=localStorage.getItem('spider-theme')||'light';
+  d.setAttribute('data-theme',saved);
+  updateThemeIcon(saved);
+
+  // Hex Grid Canvas (Dark mode only)
+  var canvas=document.getElementById('hexGrid');
+  var ctx=canvas.getContext('2d');
+  var hexSize=30;
+  var animationId=null;
+  var time=0;
+
+  function resizeCanvas(){
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize',resizeCanvas);
+
+  function drawHex(x,y,size){
+    ctx.beginPath();
+    for(var i=0;i<6;i++){
+      var angle=(Math.PI/3)*i-Math.PI/6;
+      ctx.lineTo(x+size*Math.cos(angle),y+size*Math.sin(angle));
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  function animate(){
+    time+=0.003;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle='rgba(43,127,255,.08)';
+    ctx.lineWidth=0.8;
+
+    var cols=Math.ceil(canvas.width/(hexSize*1.5))+1;
+    var rows=Math.ceil(canvas.height/(hexSize*0.866))+1;
+
+    for(var row=0;row<rows;row++){
+      for(var col=0;col<cols;col++){
+        var x=col*hexSize*1.5;
+        var y=row*hexSize*0.866*2+(col%2)*hexSize*0.866;
+        var pulse=Math.sin(time+col*0.5+row*0.3)*0.5+0.5;
+        ctx.globalAlpha=0.15+pulse*0.15;
+        drawHex(x,y,hexSize);
+      }
+    }
+    ctx.globalAlpha=1;
+    animationId=requestAnimationFrame(animate);
+  }
+
+  function startHexGrid(){
+    if(animationId)cancelAnimationFrame(animationId);
+    animate();
+  }
+
+  function stopHexGrid(){
+    if(animationId)cancelAnimationFrame(animationId);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+
+  // Theme toggle
+  var toggle=document.getElementById('themeToggle');
+  toggle.onclick=function(){
+    var cur=d.getAttribute('data-theme')||'light';
+    var nxt=cur==='dark'?'light':'dark';
+    d.setAttribute('data-theme',nxt);
+    localStorage.setItem('spider-theme',nxt);
+    updateThemeIcon(nxt);
+    if(nxt==='dark')startHexGrid();else stopHexGrid();
+  };
+
+  function updateThemeIcon(theme){
+    toggle.textContent=theme==='dark'?'🌙':'☀️';
+  }
+
+  // Initialize hex grid for dark mode
+  if(saved==='dark')startHexGrid();
+
+  // Eye toggle
+  var pw=document.getElementById('pw'),eye=document.getElementById('eye-btn'),eyeIcon=eye.querySelector('i');
+  eye.onclick=function(){
+    var show=pw.type==='password';
+    pw.type=show?'text':'password';
+    eyeIcon.className='ti '+(show?'ti-eye-off':'ti-eye');
+  };
+
+  // Login form
+  document.getElementById('form').addEventListener('submit',async function(e){
+    e.preventDefault();
+    var btn=document.getElementById('btn'),err=document.getElementById('err'),et=document.getElementById('err-text');
+    err.classList.remove('show');btn.disabled=true;btn.classList.add('btn-loading');
+    try{
+      var r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw.value})});
+      if(!r.ok){var d=await r.json().catch(function(){return{}});throw new Error(d.detail||'خطا در ورود');}
+      location.href='/dashboard';
+    }catch(ex){
+      et.textContent=ex.message;err.classList.add('show');
+      btn.disabled=false;btn.classList.remove('btn-loading');
+    }
+  });
+})();
+</script>
+</body>
+</html>

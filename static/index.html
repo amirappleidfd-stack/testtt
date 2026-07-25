@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark" data-accent="red">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Spider Panel v4</title>
+<style>
+
+:root,[data-accent="red"]{
+  --bg:#050510;--bg2:rgba(15,15,30,.85);--bg3:rgba(25,25,50,.6);--txt:#e0e0f0;--txt2:#7777aa;
+  --neon:#ff1744;--neon2:#ff5252;--purple:#7c4dff;--blue:#448aff;--green:#00e676;
+  --gold:#ffab00;--r:12px;--bg-opacity:0.06;--glass:rgba(15,15,30,.75);
+  --glow:0 0 30px rgba(255,23,68,.18);--glow-strong:0 0 40px rgba(255,23,68,.3);
+  --grad1:#ff1744;--grad2:#7c4dff;--grad:linear-gradient(135deg,#ff1744,#7c4dff);
+  --logo-shadow:drop-shadow(0 0 20px rgba(255,23,68,.5));
+  --tab-bg:#ff1744;--tab-color:#fff;--tab-glow:0 0 16px rgba(255,23,68,.4);
+  --nav-bg:rgba(255,23,68,.08);--nav-color:#ff1744;
+  --border-glow:rgba(255,23,68,.2);--input-glow:rgba(255,23,68,.15);
+  --orb1:rgba(255,23,68,.12);--orb2:rgba(124,77,255,.08);
+}
+[data-accent="green"]{
+  --neon:#00ff41;--neon2:#69f0ae;--glow:0 0 30px rgba(0,255,65,.15);--glow-strong:0 0 40px rgba(0,255,65,.25);
+  --grad1:#00ff41;--grad2:#00c853;--grad:linear-gradient(135deg,#00ff41,#00c853);
+  --logo-shadow:drop-shadow(0 0 20px rgba(0,255,65,.5));
+  --tab-bg:#00ff41;--tab-color:#000;--tab-glow:0 0 16px rgba(0,255,65,.4);
+  --nav-bg:rgba(0,255,65,.08);--nav-color:#00ff41;
+  --border-glow:rgba(0,255,65,.2);--input-glow:rgba(0,255,65,.15);
+  --orb1:rgba(0,255,65,.12);--orb2:rgba(0,200,80,.08);
+}
+[data-accent="blue"]{
+  --neon:#448aff;--neon2:#82b1ff;--glow:0 0 30px rgba(68,138,255,.15);--glow-strong:0 0 40px rgba(68,138,255,.25);
+  --grad1:#448aff;--grad2:#7c4dff;--grad:linear-gradient(135deg,#448aff,#7c4dff);
+  --logo-shadow:drop-shadow(0 0 20px rgba(68,138,255,.5));
+  --tab-bg:#448aff;--tab-color:#fff;--tab-glow:0 0 16px rgba(68,138,255,.4);
+  --nav-bg:rgba(68,138,255,.08);--nav-color:#448aff;
+  --border-glow:rgba(68,138,255,.2);--input-glow:rgba(68,138,255,.15);
+  --orb1:rgba(68,138,255,.12);--orb2:rgba(124,77,255,.08);
+}
+[data-theme="light"][data-accent="red"],
+[data-theme="light"]:not([data-accent]){--bg:#f0f0f5;--bg2:rgba(255,255,255,.9);--bg3:rgba(240,240,248,.8);--txt:#1a1a2e;--txt2:#555570;--neon:#d50000;--bg-opacity:0.03;--glow:0 0 20px rgba(213,0,0,.1);--glass:rgba(255,255,255,.8)}
+[data-theme="light"][data-accent="green"]{--bg:#edf5ed;--bg2:rgba(255,255,255,.9);--bg3:rgba(232,245,232,.8);--txt:#0a1a0a;--txt2:#447744;--neon:#0a0;--bg-opacity:0.03;--glow:0 0 20px rgba(0,170,0,.1);--glass:rgba(255,255,255,.8)}
+[data-theme="light"][data-accent="blue"]{--bg:#edf0f8;--bg2:rgba(255,255,255,.9);--bg3:rgba(232,236,248,.8);--txt:#0a0a2a;--txt2:#445588;--neon:#448aff;--bg-opacity:0.03;--glow:0 0 20px rgba(68,138,255,.1);--glass:rgba(255,255,255,.8)}
+
+*{margin:0;padding:0;box-sizing:border-box}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes neonPulse{0%,100%{box-shadow:0 0 5px var(--neon),0 0 10px var(--neon2)}50%{box-shadow:0 0 20px var(--neon),0 0 40px var(--neon2)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes particle{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+@keyframes borderGlow{0%,100%{border-color:var(--border-glow)}50%{border-color:var(--neon)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes scaleIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--txt);overflow-x:hidden;
+  min-height:100vh;line-height:1.6;
+}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--neon);border-radius:4px}
+
+/* Particles canvas */
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4}
+
+/* Login */
+.login-wrap{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;position:relative;z-index:1;
+}
+.login-bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+.login-bg .bg-img{position:absolute;inset:0;background:url(/static/login-bg.jpg) center/cover no-repeat;opacity:.25}
+.login-bg .orb{position:absolute;border-radius:50%;filter:blur(140px);animation:float 6s ease-in-out infinite}
+.login-bg .o1{width:500px;height:500px;background:var(--orb1);top:-150px;left:-100px}
+.login-bg .o2{width:400px;height:400px;background:var(--orb2);bottom:-100px;right:-80px;animation-delay:-3s}
+.login-card{
+  position:relative;z-index:1;background:var(--glass);backdrop-filter:blur(20px);
+  border:1px solid var(--bg3);border-radius:20px;padding:44px 36px;
+  width:100%;max-width:420px;box-shadow:var(--glow);animation:scaleIn .5s ease;
+}
+.login-logo{text-align:center;margin-bottom:16px}
+.login-logo img{width:60px;height:60px;filter:var(--logo-shadow);mix-blend-mode:screen}
+.login-title{
+  font-size:22px;font-weight:800;text-align:center;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:24px;letter-spacing:3px;
+}
+.f-g{margin-bottom:14px}
+.f-g label{display:block;font-size:11px;color:var(--txt2);margin-bottom:6px;font-weight:600;letter-spacing:.5px}
+.f-g input,.f-g select{
+  width:100%;padding:11px 14px;background:var(--bg3);backdrop-filter:blur(10px);
+  border:1px solid transparent;border-radius:var(--r);color:var(--txt);
+  font-size:14px;outline:none;transition:all .25s;font-family:inherit;
+}
+.f-g input:focus,.f-g select:focus{
+  border-color:var(--neon);box-shadow:0 0 0 3px var(--input-glow);
+}
+.f-r{display:flex;gap:10px}.f-r .f-g{flex:1}
+.login-btn{
+  width:100%;padding:13px;background:var(--grad);color:#fff;border:none;
+  border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .3s;font-family:inherit;position:relative;overflow:hidden;
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:var(--glow-strong)}
+.login-btn:active{transform:translateY(0)}
+.login-err{color:var(--neon2);font-size:12px;text-align:center;margin-top:12px;display:none}
+.login-err.show{display:block;animation:fadeIn .3s ease}
+.login-hint{text-align:center;margin-top:16px;font-size:11px;color:var(--txt2)}
+.login-hint code{cursor:pointer;color:var(--neon)}
+
+/* App Layout */
+.app-wrap{display:none;min-height:100vh;position:relative;z-index:1}
+.app-wrap.active{display:flex}
+.dash-bg-img{position:fixed;inset:0;z-index:0;background:url(/static/bg.jpg) center center/cover no-repeat;opacity:var(--bg-opacity);pointer-events:none}
+
+/* Sidebar - Glass */
+.sidebar{
+  width:250px;background:var(--glass);backdrop-filter:blur(24px);
+  border-left:1px solid var(--bg3);display:flex;flex-direction:column;
+  position:fixed;top:0;bottom:0;right:0;z-index:100;transition:transform .35s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;overflow-x:hidden;
+}
+.sb-brand{padding:22px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--bg3)}
+.sb-brand img{width:40px;height:40px;mix-blend-mode:screen}
+.sb-brand-t{font-size:17px;font-weight:800;letter-spacing:3px}
+.sb-brand-t span{color:var(--neon)}.sb-brand-s{font-size:10px;color:var(--txt2);letter-spacing:5px;margin-top:2px}
+.sb-nav{flex:1;padding:12px 0;overflow-y:auto}
+.nav-item{
+  padding:12px 22px;display:flex;align-items:center;gap:10px;cursor:pointer;
+  font-size:13px;font-weight:500;color:var(--txt2);transition:all .2s;
+  border-right:3px solid transparent;margin:2px 0;
+}
+.nav-item:hover{color:var(--txt);background:rgba(255,255,255,.03)}
+.nav-item.active{color:var(--nav-color);background:var(--nav-bg);border-right-color:var(--nav-color)}
+.nav-item .nav-ic{width:20px;height:20px;display:inline-flex;flex-shrink:0}
+.sb-foot{padding:16px 22px;border-top:1px solid var(--bg3);font-size:11px;color:var(--txt2)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-left:6px;animation:pulse 2s infinite}
+
+/* Main area */
+.main-area{flex:1;margin-right:250px;display:flex;flex-direction:column;position:relative;z-index:1}
+.topbar{
+  padding:14px 24px;background:var(--glass);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--bg3);display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.topbar-greet{font-size:14px}.topbar-greet strong{color:var(--neon)}
+.topbar-r{display:flex;gap:8px;align-items:center}
+.content{padding:20px 24px;flex:1;overflow-y:auto;position:relative;z-index:1}
+
+/* Cards - Glass */
+.panel{
+  background:var(--glass);backdrop-filter:blur(16px);
+  border:1px solid var(--bg3);border-radius:16px;padding:22px;
+  margin-bottom:16px;transition:all .3s;animation:fadeIn .4s ease;
+}
+.panel:hover{border-color:var(--border-glow);box-shadow:var(--glow)}
+.panel-h{
+  font-size:15px;font-weight:700;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.panel-h .glow{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{
+  background:var(--glass);backdrop-filter:blur(12px);
+  border:1px solid var(--bg3);border-radius:16px;padding:20px 16px;
+  text-align:center;transition:all .3s;animation:fadeIn .5s ease;
+}
+.stat:hover{border-color:var(--border-glow);transform:translateY(-3px);box-shadow:var(--glow)}
+.stat-icon{margin-bottom:8px;color:var(--neon)}
+.stat-v{font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-l{font-size:11px;color:var(--txt2);margin-top:4px}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:9px 18px;
+  border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .25s;font-family:inherit;text-decoration:none;
+}
+.btn-p{background:var(--grad);color:#fff}
+.btn-p:hover{transform:translateY(-2px);box-shadow:var(--glow-strong)}
+.btn-g{background:var(--bg3);color:var(--txt)}.btn-g:hover{background:rgba(255,255,255,.08)}
+.btn-r{background:rgba(255,23,68,.1);color:var(--red)}.btn-r:hover{background:rgba(255,23,68,.2)}
+.btn-gr{background:rgba(0,230,118,.1);color:var(--green)}.btn-b{background:rgba(68,138,255,.1);color:var(--blue)}
+.btn-sm{padding:5px 12px;font-size:11px;border-radius:8px}
+.btn-icon{width:36px;height:36px;padding:0;justify-content:center;border-radius:10px}
+
+/* Tables */
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+table{width:100%;border-collapse:collapse}
+th{text-align:right;padding:12px;font-size:11px;color:var(--txt2);font-weight:600;border-bottom:2px solid var(--bg3)}
+td{padding:12px;font-size:13px;border-bottom:1px solid var(--bg3)}
+tr:hover td{background:rgba(255,255,255,.02)}
+tr{animation:fadeIn .3s ease}
+.act-row{display:flex;gap:4px;flex-wrap:wrap}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600}
+.badge-g{background:rgba(0,230,118,.15);color:var(--green)}
+.badge-r{background:rgba(255,23,68,.15);color:var(--red)}
+.badge-b{background:rgba(68,138,255,.15);color:var(--blue)}
+.badge-p{background:rgba(124,77,255,.15);color:var(--purple)}
+.empty{text-align:center;padding:40px;color:var(--txt2);font-size:13px}
+
+.pbar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:5px}
+.pbar-f{height:100%;background:var(--grad);border-radius:3px;transition:width .5s ease}
+
+.srv-bar{margin-bottom:6px}.srv-bar-h{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px}
+.srv-bar-h strong{font-size:11px}.srv-bar-bg{height:7px;background:rgba(0,0,0,.3);border-radius:4px;overflow:hidden}
+.srv-bar-f{height:100%;border-radius:4px;transition:width .5s ease}
+
+/* Modal - Glass */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
+  z-index:200;display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal.show{display:flex;animation:fadeIn .2s ease}
+.modal-c{
+  background:var(--glass);backdrop-filter:blur(24px);
+  border:1px solid var(--bg3);border-radius:20px;padding:28px;
+  width:100%;max-width:480px;max-height:85vh;overflow-y:auto;
+  box-shadow:var(--glow);animation:scaleIn .3s ease;
+}
+.modal-t{font-size:19px;font-weight:700;margin-bottom:18px}
+.modal-t .glow{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.modal-btns{display:flex;gap:8px;margin-top:18px}
+.modal-btns .btn{flex:1;justify-content:center;padding:11px}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{
+  padding:8px 18px;border-radius:10px;font-size:12px;font-weight:600;
+  cursor:pointer;color:var(--txt2);background:var(--bg3);border:none;
+  font-family:inherit;transition:all .25s;
+}
+.tab:hover{color:var(--txt)}
+.tab.active{background:var(--tab-bg);color:var(--tab-color);box-shadow:var(--tab-glow)}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  background:var(--glass);backdrop-filter:blur(20px);
+  border:1px solid var(--bg3);color:var(--txt);padding:12px 28px;
+  border-radius:30px;font-size:13px;z-index:999;opacity:0;
+  transition:opacity .3s;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1;animation:slideUp .3s ease}
+
+/* Spider IP */
+.ip-scanner{max-width:100%}
+.ip-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg3);border-radius:10px;margin-bottom:6px;transition:all .2s;flex-wrap:wrap;gap:8px}
+.ip-row:hover{background:rgba(255,255,255,.05)}
+.ip-addr{font-family:'Cascadia Code',monospace;font-size:13px;direction:ltr;color:var(--neon)}
+.ip-ping{font-size:12px;font-weight:600}.ip-ping.fast{color:var(--green)}.ip-ping.mid{color:var(--gold)}.ip-ping.slow{color:var(--red)}
+.ip-speed{color:var(--gold);font-family:monospace;font-size:12px;font-weight:700;background:rgba(234,179,8,.1);padding:3px 8px;border-radius:5px}
+.ip-ping-val{color:var(--green);font-family:monospace;font-size:12px;font-weight:700;background:rgba(0,255,65,.08);padding:3px 8px;border-radius:5px}
+.ip-actions{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.ip-bar{height:7px;background:var(--bg3);border-radius:4px;overflow-hidden;margin:8px 0}
+.ip-bar-f{height:100%;background:var(--grad);transition:width .4s ease}
+/* IP scanner config builder tabs */
+.cfg-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.cfg-tab{flex:1;min-width:60px;padding:8px;background:rgba(0,0,0,.04);border:1px solid var(--bg3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;color:var(--txt2);transition:all .2s}
+.cfg-tab.active{background:var(--grad);color:#fff;border-color:transparent}
+.cfg-field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.cfg-field label{font-size:11px;color:var(--txt2);font-weight:700}
+.cfg-field input,.cfg-field select,.cfg-field textarea{background:var(--bg3);border:1px solid transparent;border-radius:var(--r);padding:9px 10px;color:var(--txt);font-size:12px;outline:none;width:100%;box-sizing:border-box;font-family:monospace;transition:all .2s}
+.cfg-field input:focus,.cfg-field select:focus,.cfg-field textarea:focus{border-color:var(--neon);box-shadow:0 0 0 3px var(--input-glow)}
+.cfg-field textarea{resize:vertical;min-height:70px}
+.chart-wrap{background:var(--bg3);border:1px solid var(--bg3);border-radius:12px;padding:12px;margin-top:10px;display:none}
+.chart-bars{display:flex;align-items:flex-end;gap:5px;height:80px}
+.chart-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.chart-bar{width:100%;background:var(--grad);border-radius:4px 4px 0 0;transition:height .4s;min-width:10px}
+.chart-label{font-size:9px;color:var(--txt2);font-family:monospace;text-align:center;word-break:break-all}
+.chart-ms{font-size:9px;color:var(--neon);font-family:monospace;font-weight:700}
+.port-check-row{display:flex;gap:12px;flex-wrap:wrap}
+.port-check-row label{font-size:12px;font-family:monospace;display:flex;align-items:center;gap:4px}
+
+/* Config code */
+.cfg-code{
+  background:rgba(0,0,0,.4);border:1px solid var(--bg3);border-radius:12px;
+  padding:16px;font-family:'Cascadia Code',monospace;font-size:12px;
+  direction:ltr;text-align:left;word-break:break-all;max-height:220px;
+  overflow-y:auto;margin-bottom:14px;white-space:pre-wrap;color:var(--neon);
+}
+
+/* Settings rows */
+.set-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bg3)}
+.set-row:last-child{border-bottom:none}
+.set-lbl{font-size:13px;color:var(--txt2)}.set-val{font-size:13px;font-weight:600}
+
+/* Sub cards */
+.sub-card{background:var(--bg3);border-radius:12px;padding:16px;margin-bottom:10px;transition:all .2s}
+.sub-card:hover{border:1px solid var(--border-glow)}
+.sub-card-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sub-card-name{font-size:14px;font-weight:700}
+.sub-link{width:100%;padding:8px 12px;background:rgba(0,0,0,.3);border:1px solid var(--bg3);border-radius:8px;font-family:monospace;font-size:11px;direction:ltr;text-align:left;color:var(--txt2);margin-bottom:8px}
+.sub-acts{display:flex;gap:6px;flex-wrap:wrap}
+
+/* Theme selector in settings */
+.theme-dots{display:flex;gap:8px}
+.theme-dot{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative}
+.theme-dot:hover{transform:scale(1.15);border-color:var(--txt)}
+.theme-dot.active{border-color:var(--neon);box-shadow:0 0 12px var(--neon)}
+.theme-dot.red{background:#ff1744}.theme-dot.green{background:#00ff41}.theme-dot.blue{background:#448aff}
+
+.hidden{display:none!important}
+
+/* Separator */
+.divider{height:1px;background:var(--bg3);margin:16px 0}
+
+/* Copy button flash */
+@keyframes copyFlash{0%{background:var(--neon)}100%{background:transparent}}
+
+/* Mobile */
+@media(max-width:900px){
+  body{font-size:14px}
+  input,select,button,textarea{font-size:16px!important}
+  .sidebar{transform:translateX(100%);width:260px}.sidebar.open{transform:translateX(0)}
+  .main-area{margin-right:0}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat{padding:14px 10px}.stat-v{font-size:20px}.stat-l{font-size:10px}
+  .topbar{padding:10px 14px}.content{padding:12px}
+  .panel{padding:14px;border-radius:12px}
+  .modal-c{padding:18px;border-radius:16px}
+  .btn{padding:10px 14px;font-size:12px}
+  .btn-sm{padding:6px 10px;font-size:11px}
+  td,th{padding:8px 6px;font-size:11px}
+  .sb-brand{padding:16px 14px}
+}
+/* Sidebar backdrop */
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+@media(max-width:900px){.sidebar-backdrop.show{display:block}}
+.sidebar-tog{display:none}@media(max-width:900px){.sidebar-tog{display:inline-flex!important}}
+
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- ═══════ LOGIN ═══════ -->
+<div class="login-wrap" id="login-wrap" style="display:none">
+  <div class="login-bg">
+    <div class="bg-img"></div>
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+  </div>
+  <div class="login-card">
+    <div class="login-logo"><img src="/static/spider-logo.png" alt="Spider" onerror="this.style.display='none'" style="background:transparent;mix-blend-mode:screen"></div>
+    <div class="login-title">SPIDER PANEL</div>
+    <div class="f-g"><label>نام کاربری</label><input type="text" id="login-user" value="admin" autocomplete="username"></div>
+    <div class="f-g"><label>رمز عبور</label><input type="password" id="login-pw" value="admin" autocomplete="current-password"></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">ورود به پنل</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-hint">پیش‌فرض: <code onclick="$id('login-user').value='admin';$id('login-pw').value='admin'">admin / admin</code></div>
+  </div>
+</div>
+
+<!-- ═══════ APP ═══════ -->
+<div class="app-wrap" id="app-wrap">
+  <div class="dash-bg-img"></div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <img src="/static/spider-logo.png" alt="S" onerror="this.style.display='none'" style="background:transparent;mix-blend-mode:screen">
+      <div>
+        <div class="sb-brand-t"><span>S</span>PIDER</div>
+        <div class="sb-brand-s">PANEL v4</div>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div class="nav-item active" onclick="switchTab('dashboard',this)">
+        <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></span>
+        داشبورد
+      </div>
+      <div class="nav-item" onclick="switchTab('users',this)">
+        <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8zm13 10v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg></span>
+        کاربران
+      </div>
+      <div class="nav-item" onclick="switchTab('inbounds',this)">
+        <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></span>
+        اینباندها
+      </div>
+      <div class="nav-item" onclick="switchTab('spider-ip',this)">
+        <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></span>
+        Spider IP
+      </div>
+      <div class="nav-item" onclick="switchTab('settings',this)">
+        <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
+        تنظیمات
+      </div>
+      <div class="nav-item" onclick="doLogout()" style="color:var(--red)!important">
+        <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m7 14l5-5-5-5m5 5H9"/></svg></span>
+        خروج
+      </div>
+    </nav>
+    <div class="sb-foot"><span class="dot"></span> Spider Panel v4.0</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="topbar">
+      <div class="topbar-greet" id="grt"></div>
+      <div class="topbar-r">
+        <button class="btn btn-sm btn-g sidebar-tog" onclick="toggleSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD TAB -->
+      <div class="tab-content" id="tab-dashboard">
+        <div class="panel"><div class="panel-h"><span class="glow">داشبورد</span></div><div id="dashboard-content"><div class="empty">در حال بارگذاری...</div></div></div>
+      </div>
+
+      <!-- USERS TAB -->
+      <div class="tab-content hidden" id="tab-users">
+        <div class="panel">
+          <div class="panel-h" style="justify-content:space-between">
+            <span class="glow">مدیریت کاربران</span>
+            <button class="btn btn-p" onclick="openCreateUser()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              کاربر جدید
+            </button>
+          </div>
+          <div id="users-list"><div class="empty">در حال بارگذاری...</div></div>
+        </div>
+      </div>
+
+      <!-- INBOUNDS TAB -->
+      <div class="tab-content hidden" id="tab-inbounds">
+        <div class="panel">
+          <div class="panel-h" style="justify-content:space-between">
+            <span class="glow">مدیریت اینباندها</span>
+            <button class="btn btn-p" onclick="openCreateInbound()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              اینباند جدید
+            </button>
+          </div>
+          <div id="inbounds-list"><div class="empty">در حال بارگذاری...</div></div>
+        </div>
+
+        <!-- Domain Management -->
+        <div class="panel">
+          <div class="panel-h"><span class="glow">مدیریت دامنه</span></div>
+          <form onsubmit="saveDomainSettings(event)">
+            <div class="f-g"><label>دامنه</label><input type="text" id="set-domain" placeholder="example.com" dir="ltr"></div>
+            <button class="btn btn-p" style="width:100%;margin-top:8px">ذخیره دامنه</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- SPIDER IP TAB -->
+      <div class="tab-content hidden" id="tab-spider-ip">
+        <!-- Server Resources -->
+        <div class="panel" style="margin-bottom:14px">
+          <div class="panel-h"><span class="glow">Server Resources</span></div>
+          <div id="neon-bars">
+            <div class="set-row" style="flex-direction:column;align-items:stretch;gap:6px">
+              <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--txt2)">CPU</span><span id="cpu-val" style="color:var(--neon);font-family:monospace">--</span></div>
+              <div class="pbar" style="height:8px;border-radius:4px"><div class="pbar-f" id="cpu-bar" style="width:0%;background:linear-gradient(90deg,var(--neon),#ff6b6b);border-radius:4px;transition:width .5s"></div></div>
+            </div>
+            <div class="set-row" style="flex-direction:column;align-items:stretch;gap:6px;margin-top:10px">
+              <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--txt2)">RAM</span><span id="ram-val" style="color:#ffab00;font-family:monospace">--</span></div>
+              <div class="pbar" style="height:8px;border-radius:4px"><div class="pbar-f" id="ram-bar" style="width:0%;background:linear-gradient(90deg,#ffab00,#ff6b00);border-radius:4px;transition:width .5s"></div></div>
+            </div>
+            <div class="set-row" style="flex-direction:column;align-items:stretch;gap:6px;margin-top:10px">
+              <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--txt2)">Disk</span><span id="disk-val" style="color:var(--blue);font-family:monospace">--</span></div>
+              <div class="pbar" style="height:8px;border-radius:4px"><div class="pbar-f" id="disk-bar" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:4px;transition:width .5s"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt2);margin-top:8px">
+              <span>Network: <b id="net-sent" style="color:var(--neon)">--</b> up / <b id="net-recv" style="color:var(--blue)">--</b> down</span>
+              <span>Uptime: <b id="sys-uptime" style="color:var(--gold)">--</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Railway IP Scanner -->
+        <div class="panel" style="margin-bottom:14px">
+          <div class="panel-h"><span class="glow">Railway IP Scanner</span></div>
+          <div style="margin-bottom:10px;font-size:11px;color:var(--txt2);line-height:1.5">
+            Ping Railway region endpoints to find the fastest deployment location.
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <button class="btn btn-p" onclick="scanRailwayRegions()" style="flex:1;justify-content:center">Scan Railway Regions</button>
+            <button class="btn btn-g" onclick="getServerIP()" style="flex:1;justify-content:center">Show My IP</button>
+          </div>
+          <div id="rwProgress" style="display:none;margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span id="rwStatus">...</span><span id="rwCount" style="color:var(--neon)">0/0</span></div>
+            <div class="pbar"><div class="pbar-f" id="rwBar" style="width:0%"></div></div>
+          </div>
+          <div id="rwResults" style="display:none;margin-top:12px">
+            <div style="font-size:12px;font-weight:600;margin-bottom:10px">Ping Results:</div>
+            <div id="rwIpList" style="display:flex;flex-direction:column;gap:6px;max-height:350px;overflow-y:auto"></div>
+          </div>
+        </div>
+
+        <!-- Config Builder -->
+        <div class="panel">
+          <div class="panel-h"><span class="glow">Config Builder</span></div>
+          <div class="f-r" style="margin-bottom:10px">
+            <div class="f-g"><label style="font-size:10px;color:var(--txt2)">UUID</label><div style="display:flex;gap:6px"><input type="text" id="cfgUUID" style="font-size:11px;font-family:monospace"><button class="btn btn-sm btn-g" type="button" onclick="genCfgUUID()">Gen</button></div></div>
+            <div class="f-g"><label style="font-size:10px;color:var(--txt2)">SNI</label><input type="text" id="cfgSNI" value="speedtest.net" style="font-size:11px"></div>
+          </div>
+          <div class="f-r" style="margin-bottom:10px">
+            <div class="f-g"><label style="font-size:10px;color:var(--txt2)">Security</label><select id="cfgSec"><option value="tls">TLS</option><option value="none">None</option></select></div>
+            <div class="f-g"><label style="font-size:10px;color:var(--txt2)">Network</label><select id="cfgNet"><option value="ws">WS</option><option value="tcp">TCP</option></select></div>
+          </div>
+          <div class="f-g" style="margin-bottom:10px"><label style="font-size:10px;color:var(--txt2)">Path</label><input type="text" id="cfgPath" value="/" style="font-size:11px;font-family:monospace"></div>
+          <div class="f-g" style="margin-bottom:10px"><label style="font-size:10px;color:var(--txt2)">IPs (one per line, IP:Port)</label><textarea id="cfgIPs" rows="3" style="font-size:11px;font-family:monospace;background:rgba(0,0,0,.2);border:1px solid var(--border);color:var(--txt);width:100%;border-radius:8px;padding:8px;resize:vertical"></textarea></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-p" onclick="rwBuildConfig()">Build Config</button>
+            <button class="btn btn-sm btn-gr" onclick="cfImportFromScanner()">Import from Scanner</button>
+          </div>
+          <div id="cfgOutput" style="display:none;margin-top:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span id="cfgOutLabel" style="font-size:11px;font-weight:700;color:var(--green)"></span>
+              <div style="display:flex;gap:4px"><button class="btn btn-sm btn-gr" onclick="rwCopyCfg()">Copy</button><button class="btn btn-sm btn-g" onclick="rwDownloadCfg()">Download</button></div>
+            </div>
+            <pre id="cfgPre" style="background:rgba(0,0,0,.3);border-radius:8px;padding:12px;font-family:monospace;font-size:10px;direction:ltr;max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;color:var(--txt)"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div class="tab-content hidden" id="tab-settings">
+        <div class="panel">
+          <div class="panel-h"><span class="glow">تنظیمات ظاهری</span></div>
+
+          <div class="set-row"><span class="set-lbl">تم</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm btn-g" onclick="setTheme('dark')">تاریک</button>
+              <button class="btn btn-sm btn-g" onclick="setTheme('light')">روشن</button>
+            </div>
+          </div>
+
+          <div class="set-row"><span class="set-lbl">رنگ</span>
+            <div class="theme-dots">
+              <div class="theme-dot red" onclick="setAccent('red')" title="قرمز"></div>
+              <div class="theme-dot green" onclick="setAccent('green')" title="سبز"></div>
+              <div class="theme-dot blue" onclick="setAccent('blue')" title="آبی"></div>
+            </div>
+          </div>
+
+          <div class="set-row"><span class="set-lbl">شفافیت پس‌زمینه</span>
+            <input type="range" id="bg-opacity-slider" min="0" max="20" value="6" oninput="setBgOpacity(this.value)" style="width:140px;accent-color:var(--neon)">
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><span class="glow">Panel Music</span></div>
+          <div class="set-row"><span class="set-lbl">Background Music</span>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--txt2)">
+              <input type="checkbox" id="audio-autoplay" checked onchange="togglePanelAudio()">
+              Auto-play music (static/music-panel.mp3)
+            </label>
+          </div>
+          <audio id="panel-audio-player" loop style="display:none"></audio>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><span class="glow">Change Password</span></div>
+          <form onsubmit="changePassword(event)">
+            <div class="f-g"><label>رمز فعلی</label><input type="password" id="cp-old" required></div>
+            <div class="f-g"><label>رمز جدید</label><input type="password" id="cp-new" required minlength="4"></div>
+            <button class="btn btn-p" style="width:100%">تغییر رمز</button>
+          </form>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-area -->
+</div><!-- /app-wrap -->
+
+<!-- ═══════ MODALS ═══════ -->
+
+<!-- CREATE USER -->
+<div class="modal" id="mod-user"><div class="modal-c">
+  <div class="modal-t"><span class="glow">ایجاد کاربر جدید</span></div>
+  <form onsubmit="submitCreateUser(event)">
+    <div class="f-g"><label>نام کاربری</label><input type="text" id="cu-name" required></div>
+    <div class="f-r">
+      <div class="f-g"><label>حجم</label><input type="number" id="cu-vol" value="20"></div>
+      <div class="f-g"><label>واحد</label><select id="cu-vol-u"><option value="GB">GB</option><option value="MB">MB</option></select></div>
+    </div>
+    <div class="f-r">
+      <div class="f-g"><label>اعتبار</label><input type="number" id="cu-exp" value="30"></div>
+      <div class="f-g"><label>واحد</label><select id="cu-exp-u"><option value="days">روز</option><option value="months">ماه</option></select></div>
+    </div>
+    <div class="f-g"><label>اتصال همزمان</label><input type="number" id="cu-conn" value="2"></div>
+    <div class="f-g"><label>اینباند</label><select id="cu-inbound"><option value="">-- پیش‌فرض --</option></select></div>
+    <div class="modal-btns">
+      <button type="button" class="btn btn-g" onclick="closeModal('mod-user')">انصراف</button>
+      <button type="submit" class="btn btn-p" id="cu-submit">ایجاد کاربر</button>
+    </div>
+  </form>
+</div></div>
+
+<!-- EDIT USER -->
+<div class="modal" id="mod-edit-user"><div class="modal-c">
+  <div class="modal-t"><span class="glow">ویرایش کاربر</span></div>
+  <form onsubmit="submitEditUser(event)">
+    <input type="hidden" id="eu-id">
+    <div class="f-g"><label>نام کاربری</label><input type="text" id="eu-name" required></div>
+    <div class="f-g"><label>حجم (GB - ۰=نامحدود)</label><input type="number" id="eu-vol" value="20"></div>
+    <div class="f-g"><label>روز اعتبار (۰=نامحدود)</label><input type="number" id="eu-exp" value="30"></div>
+    <div class="f-g"><label>اتصال همزمان</label><input type="number" id="eu-conn" value="2"></div>
+    <div class="f-g"><label>وضعیت</label><select id="eu-status"><option value="active">فعال</option><option value="inactive">غیرفعال</option></select></div>
+    <div class="f-g" style="display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="eu-reset" style="width:auto">
+      <label style="margin:0">بازنشانی ترافیک</label>
+    </div>
+    <div class="modal-btns">
+      <button type="button" class="btn btn-g" onclick="closeModal('mod-edit-user')">انصراف</button>
+      <button type="submit" class="btn btn-p">ذخیره تغییرات</button>
+    </div>
+  </form>
+</div></div>
+
+<!-- INBOUND MODAL -->
+<div class="modal" id="mod-inbound"><div class="modal-c" style="max-width:560px">
+  <div class="modal-t"><span class="glow" id="ib-title">ایجاد اینباند جدید</span></div>
+  <form onsubmit="submitInbound(event)">
+    <input type="hidden" id="ib-id">
+    <!-- Common -->
+    <div class="f-g"><label>نام اینباند</label><input type="text" id="ib-name" required placeholder="مثال: Main-WS"></div>
+    <div class="f-r">
+      <div class="f-g"><label>پروتکل</label><select id="ib-proto" onchange="onInboundProtoChange()">
+        <option value="vless">VLESS</option>
+        <option value="vmess">VMess</option>
+        <option value="trojan">Trojan</option>
+      </select></div>
+      <div class="f-g"><label>پورت</label><input type="number" id="ib-port" required placeholder="443"></div>
+    </div>
+    <div class="f-r">
+      <div class="f-g"><label>پورت خارجی</label><input type="number" id="ib-ext-port" placeholder="اختیاری"></div>
+      <div class="f-g"><label>Fingerprint</label><select id="ib-fingerprint">
+        <option value="chrome">Chrome</option>
+        <option value="firefox">Firefox</option>
+        <option value="safari">Safari</option>
+        <option value="edge">Edge</option>
+        <option value="random">Random</option>
+      </select></div>
+    </div>
+
+    <!-- TLS / Reality Group -->
+    <div id="ib-sec-wrap" class="hidden">
+      <div class="f-g"><label>نوع امنیت</label><select id="ib-security" onchange="onSecurityChange()">
+        <option value="tls">TLS</option>
+        <option value="reality">Reality</option>
+        <option value="none">None</option>
+      </select></div>
+      <!-- TLS fields -->
+      <div id="ib-tls-fields">
+        <div class="f-g"><label>دامنه</label><input type="text" id="ib-domain" placeholder="example.com" dir="ltr" oninput="onDomainChange()"></div>
+        <div class="f-g"><label>SNI</label><input type="text" id="ib-sni" placeholder="example.com" dir="ltr"></div>
+      </div>
+      <!-- Reality fields -->
+      <div id="ib-reality-fields" class="hidden">
+        <div class="divider"></div>
+        <div style="font-size:11px;color:var(--neon);font-weight:700;margin-bottom:8px">تنظیمات Reality</div>
+        <div class="f-r">
+          <div class="f-g"><label>Private Key (x25519)</label><input type="text" id="ib-privkey" dir="ltr" placeholder="تولید خودکار"></div>
+          <div class="f-g"><label>Public Key</label><input type="text" id="ib-pubkey" dir="ltr" placeholder="تولید خودکار" readonly></div>
+        </div>
+        <button type="button" class="btn btn-sm btn-b" onclick="generateRealityKeysUI()" style="width:100%;margin-bottom:10px">تولید کلید Reality (x25519)</button>
+        <div class="f-g"><label>Destination</label><input type="text" id="ib-dest" value="is1-ssl.mzstatic.com:443" dir="ltr"></div>
+        <div class="f-g"><label>Server Names (SNI)</label><input type="text" id="ib-servernames" value="is1-ssl.mzstatic.com" dir="ltr" placeholder="با کاما جدا کنید"></div>
+        <div class="f-g"><label>Short IDs</label><div style="display:flex;gap:6px"><input type="text" id="ib-shortids" value="" dir="ltr" placeholder="هگز ۸ رقمی — خالی = تصادفی" style="flex:1"><button type="button" class="btn btn-sm" onclick="generateShortId()" style="white-space:nowrap">+ تولید</button></div></div>
+        <div class="f-g"><label>SpiderX</label><input type="text" id="ib-spiderx" dir="ltr" placeholder="/" value="/"></div>
+        <div class="f-g"><label>External Domain</label><input type="text" id="ib-extdomain" dir="ltr" placeholder="دامنه خارجی برای کانفیگ کلاینت"></div>
+        <div class="f-g"><label>External Port</label><input type="number" id="ib-extport" value="443" dir="ltr" placeholder="443"></div>
+      </div>
+    </div>
+
+    <!-- Network group -->
+    <div class="divider"></div>
+    <div id="ib-net-wrap">
+      <div class="f-g"><label>شبکه</label><select id="ib-network" onchange="onNetworkChange()">
+        <option value="tcp">TCP</option>
+        <option value="ws">WebSocket</option>
+        <option value="xhttp">XHTTP</option>
+        <option value="grpc">gRPC</option>
+      </select></div>
+      <!-- WS fields -->
+      <div id="ib-ws-fields" class="hidden"><div class="f-g"><label>Path</label><input type="text" id="ib-wspath" value="/" dir="ltr"></div></div>
+      <!-- XHTTP fields -->
+      <div id="ib-xhttp-fields" class="hidden">
+        <div class="f-g"><label>Path</label><input type="text" id="ib-xhttppath" value="/" dir="ltr"></div>
+        <div class="f-r">
+          <div class="f-g"><label>Mode</label><select id="ib-xhttp-mode"><option value="auto">auto</option><option value="packet-up">packet-up</option><option value="stream-one">stream-one</option></select></div>
+        </div>
+      </div>
+      <!-- gRPC fields -->
+      <div id="ib-grpc-fields" class="hidden"><div class="f-g"><label>Service Name</label><input type="text" id="ib-grpc-svc" value="grpc" dir="ltr"></div></div>
+    </div>
+
+    <div class="modal-btns">
+      <button type="button" class="btn btn-g" onclick="closeModal('mod-inbound')">انصراف</button>
+      <button type="submit" class="btn btn-p" id="ib-submit">ایجاد اینباند</button>
+    </div>
+  </form>
+</div></div>
+
+<!-- CONFIG VIEWER -->
+<div class="modal" id="mod-cfg"><div class="modal-c">
+  <div class="modal-t"><span class="glow">کانفیگ</span></div>
+  <pre class="cfg-code" id="cfg-code"></pre>
+  <div class="modal-btns">
+    <button class="btn btn-p" onclick="copyCfg()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      کپی
+    </button>
+    <button class="btn btn-g" onclick="closeModal('mod-cfg')">بستن</button>
+  </div>
+</div></div>
+
+<!-- QR MODAL -->
+<div class="modal" id="mod-qr"><div class="modal-c" style="max-width:340px;text-align:center">
+  <div class="modal-t"><span class="glow">QR Code</span></div>
+  <img id="qr-img" src="" style="width:260px;height:260px;background:#fff;border-radius:12px;margin:12px auto;display:block" alt="QR">
+  <button class="btn btn-g" onclick="closeModal('mod-qr')" style="width:100%">بستن</button>
+</div></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ─── State ───
+var $ = qs => document.querySelector(qs);
+var $id = id => document.getElementById(id);
+var curCfg = '';
+var ALL_IB = [];
+var ALL_USERS = [];
+var selectedAccent = localStorage.getItem('spider-accent') || 'red';
+var selectedTheme = localStorage.getItem('spider-theme') || 'dark';
+var bgOpacity = localStorage.getItem('spider-bg-opacity') || '0.06';
+
+// ─── API ───
+async function api(url, opts) {
+  opts = opts || {};
+  opts.credentials = 'same-origin';
+  opts.headers = opts.headers || {};
+  if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  var r = await fetch(url, opts);
+  if (!r.ok) {
+    var txt = await r.text();
+    try { var j = JSON.parse(txt); throw new Error(j.detail || j.error || txt); } catch(e) { if (e.message && e.message !== txt) throw e; }
+    throw new Error('خطای سرور: ' + r.status);
+  }
+  return r.json();
+}
+
+// ─── Toast ───
+var toastTimer;
+function toast(msg, type) {
+  var el = $id('toast');
+  el.textContent = msg;
+  el.style.color = type === 'err' ? 'var(--red)' : type === 'ok' ? 'var(--green)' : 'var(--txt)';
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2800);
+}
+
+// ─── Init ───
+document.addEventListener('DOMContentLoaded', function() {
+  loadAccent();
+  loadTheme();
+  loadBgOpacity();
+  initParticles();
+  checkAuth();
+});
+
+function initParticles() {
+  var c = $id('particles'), ctx = c.getContext('2d');
+  var w, h, particles = [];
+  function resize() { w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  for (var i = 0; i < 40; i++) {
+    particles.push({
+      x: Math.random() * w, y: Math.random() * h,
+      r: Math.random() * 1.5 + 0.5,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.5 + 0.1
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    var color = getComputedStyle(document.documentElement).getPropertyValue('--neon').trim();
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = color.replace(')', ', ' + p.alpha + ')').replace('rgb', 'rgba');
+      if (color.startsWith('#')) {
+        var hex = color.replace('#', '');
+        var rr = parseInt(hex.substring(0,2), 16), gg = parseInt(hex.substring(2,4), 16), bb = parseInt(hex.substring(4,6), 16);
+        ctx.fillStyle = 'rgba(' + rr + ',' + gg + ',' + bb + ',' + p.alpha + ')';
+      }
+      ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      // Draw connections
+      for (var j = i + 1; j < particles.length; j++) {
+        var p2 = particles[j], dx = p.x - p2.x, dy = p.y - p2.y, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 120) {
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = 'rgba(255,255,255,' + (0.03 * (1 - dist/120)) + ')';
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ─── Theme ───
+function loadAccent() { setAccent(selectedAccent); }
+function loadTheme() { setTheme(selectedTheme); }
+function loadBgOpacity() { document.documentElement.style.setProperty('--bg-opacity', bgOpacity); $id('bg-opacity-slider') && ($id('bg-opacity-slider').value = parseFloat(bgOpacity) * 100); }
+
+function setAccent(a) {
+  selectedAccent = a;
+  document.documentElement.setAttribute('data-accent', a);
+  localStorage.setItem('spider-accent', a);
+  // Update active dot
+  document.querySelectorAll('.theme-dot').forEach(function(d) { d.classList.remove('active'); });
+  var dot = document.querySelector('.theme-dot.' + a);
+  if (dot) dot.classList.add('active');
+}
+
+function setTheme(t) {
+  selectedTheme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('spider-theme', t);
+}
+
+function setBgOpacity(val) {
+  bgOpacity = (val / 100).toFixed(3);
+  document.documentElement.style.setProperty('--bg-opacity', bgOpacity);
+  localStorage.setItem('spider-bg-opacity', bgOpacity);
+}
+
+// ─── Auth ───
+async function checkAuth() {
+  try {
+    var r = await api('/api/me');
+    if (r.authenticated) { showApp(); return; }
+  } catch(e) {}
+  showLogin();
+}
+
+function showLogin() { $id('login-wrap').style.display = 'flex'; $id('app-wrap').classList.remove('active'); }
+function showApp() {
+  $id('login-wrap').style.display = 'none';
+  $id('app-wrap').classList.add('active');
+  loadAll();
+  updateGreeting();
+}
+
+async function doLogin() {
+  var btn = $id('login-btn'), errEl = $id('login-err');
+  btn.disabled = true; btn.textContent = 'در حال ورود...'; errEl.classList.remove('show');
+  try {
+    var r = await api('/api/login', {method: 'POST', body: {username: $id('login-user').value, password: $id('login-pw').value}});
+    if (r.ok || r.success) { showApp(); return; }
+    errEl.textContent = r.detail || 'خطا در ورود'; errEl.classList.add('show');
+  } catch(e) {
+    errEl.textContent = e.message || 'خطا در ارتباط با سرور'; errEl.classList.add('show');
+  }
+  btn.disabled = false; btn.textContent = 'ورود به پنل';
+}
+
+async function doLogout() {
+  try { await api('/api/logout', {method: 'POST'}); } catch(e) {}
+  localStorage.removeItem('spider_session');
+  $id('app-wrap').classList.remove('active');
+  showLogin();
+}
+
+function updateGreeting() {
+  var h = new Date().getHours(), g = h < 12 ? 'صبح بخیر' : h < 17 ? 'ظهر بخیر' : 'عصر بخیر';
+  $id('grt').innerHTML = g + '، <strong>ادمین</strong>';
+}
+
+// ─── Navigation ───
+function switchTab(tab, el) {
+  document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.add('hidden'); });
+  var target = $id('tab-' + tab);
+  if (target) target.classList.remove('hidden');
+  stopLiveStats();
+  if (tab === 'dashboard') loadDashboard();
+  if (tab === 'users') loadUsers();
+  if (tab === 'inbounds') loadInbounds();
+  if (tab === 'spider-ip') loadSpiderIP();
+  // Close sidebar on mobile
+  closeSidebar();
+}
+
+function openSidebar() { $id('sidebar').classList.add('open'); $id('sidebar-backdrop').classList.add('show'); }
+function closeSidebar() { $id('sidebar').classList.remove('open'); $id('sidebar-backdrop').classList.remove('show'); }
+function toggleSidebar() { $id('sidebar').classList.contains('open') ? closeSidebar() : openSidebar(); }
+
+// ─── Load All ───
+async function loadAll() {
+  loadDashboard();
+  loadUsers();
+  loadInbounds();
+}
+
+// ─── Dashboard ───
+var liveInterval = null;
+
+function startLiveStats() {
+  if (liveInterval) clearInterval(liveInterval);
+  refreshLiveStats();
+  liveInterval = setInterval(refreshLiveStats, 4000);
+}
+
+function stopLiveStats() {
+  if (liveInterval) { clearInterval(liveInterval); liveInterval = null; }
+}
+
+async function loadDashboard() {
+  try {
+    var s = await api('/stats');
+    var html = '<div class="stats">';
+    html += statCard(iconUsers, '<span id="dash-users">' + s.active_users + ' / ' + s.total_users + '</span>', 'کاربران فعال/کل');
+    html += statCard(iconTraffic, '<span id="dash-traffic">' + fmtBytes(s.traffic_usage_gb * 1073741824) + '</span>', 'ترافیک مصرفی');
+    html += statCard(iconConn, '<span id="dash-conn">' + (s.active_connections || '۰') + '</span>', 'اتصالات فعال');
+    html += statCard(iconUptime, '<span id="dash-uptime">...</span>', 'زمان فعالیت');
+    html += '</div>';
+    html += '<div class="panel"><div class="panel-h" style="align-items:center"><span class="glow">وضعیت زنده سرور</span><span class="badge badge-g" style="margin-right:auto;font-size:9px;animation:pulse 1.5s infinite">● LIVE</span></div>';
+    html += '<div class="srv-bar"><div class="srv-bar-h"><strong>پردازنده</strong><span id="live-cpu">--</span>%</div><div class="srv-bar-bg"><div class="srv-bar-f" id="bar-cpu" style="width:0%"></div></div></div>';
+    html += '<div class="srv-bar"><div class="srv-bar-h"><strong>حافظه رم</strong><span id="live-ram">--</span></div><div class="srv-bar-bg"><div class="srv-bar-f" id="bar-ram" style="width:0%"></div></div></div>';
+    html += '<div class="srv-bar"><div class="srv-bar-h"><strong>دیسک</strong><span id="live-disk">--</span></div><div class="srv-bar-bg"><div class="srv-bar-f" id="bar-disk" style="width:0%"></div></div></div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--txt2);margin-top:12px;padding-top:10px;border-top:1px solid var(--bg3)">';
+    html += '<span>ارسال: <strong style="color:var(--neon)" id="live-net-sent">...</strong></span>';
+    html += '<span>دریافت: <strong style="color:var(--neon)" id="live-net-recv">...</strong></span>';
+    html += '<span>Uptime: <strong style="color:var(--neon)" id="live-uptime">...</strong></span>';
+    html += '</div></div>';
+    $id('dashboard-content').innerHTML = html;
+    startLiveStats();
+  } catch(e) { $id('dashboard-content').innerHTML = '<div class="empty">خطا در بارگذاری آمار</div>'; }
+}
+
+async function refreshLiveStats() {
+  try {
+    var st = await api('/api/server/stats');
+    // Update bar fills
+    var barCpu = $id('bar-cpu'); if (barCpu) barCpu.style.width = Math.min(st.cpu_percent||0, 100) + '%';
+    var barRam = $id('bar-ram'); if (barRam) barRam.style.width = Math.min(st.ram_percent||0, 100) + '%';
+    var barDisk = $id('bar-disk'); if (barDisk) barDisk.style.width = Math.min(st.disk_percent||0, 100) + '%';
+    // Update text labels
+    var cpuEl = $id('live-cpu'); if (cpuEl) cpuEl.textContent = (st.cpu_percent||'--');
+    var ramEl = $id('live-ram'); if (ramEl) ramEl.textContent = (st.ram_used_gb||'?') + ' / ' + (st.ram_total_gb||'?') + ' GB';
+    var diskEl = $id('live-disk'); if (diskEl) diskEl.textContent = (st.disk_used_gb||'?') + ' / ' + (st.disk_total_gb||'?') + ' GB';
+    var sentEl = $id('live-net-sent'); if (sentEl) sentEl.textContent = (st.net_sent_mb||'0') + ' MB';
+    var recvEl = $id('live-net-recv'); if (recvEl) recvEl.textContent = (st.net_recv_mb||'0') + ' MB';
+    var uptEl = $id('live-uptime'); if (uptEl) uptEl.textContent = fmtUptime(st.uptime_seconds);
+    var duptEl = $id('dash-uptime'); if (duptEl) duptEl.textContent = fmtUptime(st.uptime_seconds);
+  } catch(e) { /* keep old values */ }
+}
+
+function statCard(icon, val, label) {
+  return '<div class="stat"><div class="stat-icon">' + icon + '</div><div class="stat-v">' + val + '</div><div class="stat-l">' + label + '</div></div>';
+}
+
+function srvBar(label, val, color, suffix) {
+  var p = Math.min(parseFloat(val) || 0, 100);
+  return '<div class="srv-bar"><div class="srv-bar-h"><strong>' + label + '</strong><span>' + suffix + '</span></div><div class="srv-bar-bg"><div class="srv-bar-f" style="width:' + p + '%;background:' + color + '"></div></div></div>';
+}
+
+// ─── Users ───
+async function loadUsers() {
+  try {
+    var d = await api('/api/users');
+    ALL_USERS = d.users || [];
+    renderUsers();
+  } catch(e) { $id('users-list').innerHTML = '<div class="empty">خطا در بارگذاری کاربران</div>'; }
+}
+
+function renderUsers() {
+  var el = $id('users-list');
+  if (!ALL_USERS.length) { el.innerHTML = '<div class="empty">هیچ کاربری وجود ندارد</div>'; return; }
+  var html = '<div class="tbl"><table><thead><tr><th>نام کاربری</th><th>حجم</th><th>انقضا</th><th>اتصال</th><th>وضعیت</th><th>اینباند</th><th>عملیات</th></tr></thead><tbody>';
+  for (var i = 0; i < ALL_USERS.length; i++) {
+    var u = ALL_USERS[i];
+    var used = u.traffic_used_bytes || 0, limit = u.traffic_limit_bytes || 0;
+    var pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
+    var exp = u.expire_at ? Math.ceil((new Date(u.expire_at) - new Date()) / 86400000) : null;
+    var expText = exp === null ? 'نامحدود' : exp <= 0 ? '<span style="color:var(--red)">منقضی</span>' : exp + ' روز';
+    var statusBadge = u.status === 'active' ? '<span class="badge badge-g">فعال</span>' : '<span class="badge badge-r">غیرفعال</span>';
+    var inboundName = u.inbound_name || (u.inbound_id ? u.inbound_id.substring(0,8) : 'پیش‌فرض');
+    html += '<tr>';
+    html += '<td><strong>' + esc(u.username) + '</strong></td>';
+    html += '<td>' + fmtBytes(used) + ' / ' + (limit ? fmtBytes(limit) : 'نامحدود') + '<div class="pbar"><div class="pbar-f" style="width:' + pct + '%"></div></div></td>';
+    html += '<td>' + expText + '</td>';
+    html += '<td>' + (u.concurrent_connections || '۲') + '</td>';
+    html += '<td>' + statusBadge + '</td>';
+    html += '<td><span class="badge badge-b">' + esc(inboundName) + '</span></td>';
+    html += '<td><div class="act-row">';
+    html += '<button class="btn btn-sm btn-g" onclick="viewCfg(\'' + u.user_id + '\')" title="Config">'+iconCfg+'</button>';
+    html += '<button class="btn btn-sm btn-g" onclick="viewSub(\'' + u.username + '\')" title="Sub Link">'+iconLink+'</button>';
+    html += '<button class="btn btn-sm btn-b" onclick="viewQR(\'' + u.user_id + '\')" title="QR Code">'+iconQr+'</button>';
+    html += '<button class="btn btn-sm btn-b" onclick="editUser(\'' + u.user_id + '\')" title="Edit">'+iconEdit+'</button>';
+    html += '<button class="btn btn-sm btn-r" onclick="toggleUser(\'' + u.user_id + '\')" title="Toggle">'+iconToggle+'</button>';
+    html += '<button class="btn btn-sm btn-r" onclick="deleteUser(\'' + u.user_id + '\')" title="Delete">'+iconTrash+'</button>';
+    html += '</div></td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  el.innerHTML = html;
+}
+
+// ─── User CRUD (SIMPLIFIED) ───
+function openCreateUser() {
+  populateInboundSelects();
+  $id('cu-name').value = '';
+  $id('cu-vol').value = '20';
+  $id('cu-vol-u').value = 'GB';
+  $id('cu-exp').value = '30';
+  $id('cu-exp-u').value = 'days';
+  $id('cu-conn').value = '2';
+  openModal('mod-user');
+}
+
+async function submitCreateUser(e) {
+  e.preventDefault();
+  var btn = $id('cu-submit'); btn.disabled = true; btn.textContent = 'در حال ایجاد...';
+  var v = parseFloat($id('cu-vol').value) || 0, vu = $id('cu-vol-u').value;
+  var ex = parseInt($id('cu-exp').value) || 0, eu = $id('cu-exp-u').value;
+  try {
+    var r = await api('/api/users', {method: 'POST', body: {
+      username: $id('cu-name').value,
+      traffic_limit_gb: vu === 'GB' ? v : v / 1024,
+      expire_days: eu === 'months' ? ex * 30 : ex,
+      concurrent_connections: parseInt($id('cu-conn').value) || 2,
+      inbound_id: $id('cu-inbound').value || null
+    }});
+    toast('کاربر ' + r.username + ' با موفقیت ایجاد شد', 'ok');
+    closeModal('mod-user');
+    loadAll();
+  } catch(e) { toast(e.message || 'خطا', 'err'); }
+  btn.disabled = false; btn.textContent = 'ایجاد کاربر';
+}
+
+function editUser(uid) {
+  var u = ALL_USERS.find(function(x) { return x.user_id === uid; });
+  if (!u) return;
+  $id('eu-id').value = uid;
+  $id('eu-name').value = u.username || '';
+  $id('eu-vol').value = (u.traffic_limit_bytes ? (u.traffic_limit_bytes / 1073741824).toFixed(0) : '0');
+  $id('eu-exp').value = u.expire_at ? Math.ceil((new Date(u.expire_at) - new Date()) / 86400000) : 0;
+  $id('eu-status').value = u.status || 'active';
+  $id('eu-conn').value = u.concurrent_connections || 2;
+  openModal('mod-edit-user');
+}
+
+async function submitEditUser(e) {
+  e.preventDefault();
+  var uid = $id('eu-id').value;
+  try {
+    await api('/api/users/' + uid, {method: 'PATCH', body: {
+      username: $id('eu-name').value,
+      traffic_limit_gb: $id('eu-vol').value ? parseFloat($id('eu-vol').value) : 0,
+      expire_days: parseInt($id('eu-exp').value) || 0,
+      concurrent_connections: parseInt($id('eu-conn').value) || 2,
+      status: $id('eu-status').value,
+      reset_traffic: $id('eu-reset') ? $id('eu-reset').checked : false
+    }});
+    toast('کاربر بروزرسانی شد', 'ok');
+    closeModal('mod-edit-user');
+    loadAll();
+  } catch(e) { toast(e.message || 'خطا', 'err'); }
+}
+
+async function toggleUser(uid) {
+  try { await api('/api/users/' + uid + '/toggle', {method: 'PATCH'}); loadUsers(); toast('وضعیت کاربر تغییر کرد', 'ok'); } catch(e) { toast(e.message, 'err'); }
+}
+
+async function deleteUser(uid) {
+  if (!confirm('آیا از حذف این کاربر اطمینان دارید؟')) return;
+  try { await api('/api/users/' + uid, {method: 'DELETE'}); toast('کاربر حذف شد', 'ok'); loadAll(); } catch(e) { toast(e.message, 'err'); }
+}
+
+// ─── Config & Sub ───
+async function viewCfg(uid) {
+  try {
+    var d = await api('/api/users/' + uid + '/config');
+    curCfg = d.config || '';
+    $id('cfg-code').textContent = curCfg || 'کانفیگی موجود نیست';
+    openModal('mod-cfg');
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+function copyCfg() {
+  navigator.clipboard.writeText(curCfg).then(function() { toast('کانفیگ کپی شد', 'ok'); }).catch(function() { toast('خطا در کپی', 'err'); });
+}
+
+function viewSub(username) { window.open('/sub/' + username, '_blank'); }
+function viewQR(userId) { $id('qr-img').src = '/api/users/' + userId + '/qr?t=' + Date.now(); openModal('mod-qr'); }
+
+// ─── Inbounds ───
+async function loadInbounds() {
+  try {
+    var d = await api('/api/inbounds');
+    ALL_IB = d.inbounds || [];
+    renderInbounds();
+    populateInboundSelects();
+  } catch(e) {
+    $id('inbounds-list').innerHTML = '<div class="empty">خطا در بارگذاری اینباندها</div>';
+  }
+}
+
+function renderInbounds() {
+  var el = $id('inbounds-list');
+  if (!ALL_IB.length) { el.innerHTML = '<div class="empty">هیچ اینباندی وجود ندارد</div>'; return; }
+  var html = '<div class="stats" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">';
+  for (var i = 0; i < ALL_IB.length; i++) {
+    var ib = ALL_IB[i];
+    var protoBadge = ib.protocol === 'reality' ? 'badge-p' : 'badge-b';
+    html += '<div class="stat" style="text-align:right">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+    html += '<strong>' + esc(ib.name) + '</strong><span class="badge ' + protoBadge + '">' + (ib.protocol || 'vless').toUpperCase() + '</span>';
+    html += '</div>';
+    html += '<div style="font-size:11px;color:var(--txt2);line-height:1.8">';
+    if (ib.domain) html += 'دامنه: ' + esc(ib.domain) + '<br>';
+    html += 'پورت: ' + (ib.port || '-') + (ib.external_port ? ' / خارجی: ' + ib.external_port : '') + '<br>';
+    html += 'شبکه: ' + (ib.network || 'tcp') + ' | امنیت: ' + (ib.security || 'none') + '<br>';
+    html += 'کاربران: ' + (ib.users_count || 0);
+    html += '</div>';
+    html += '<div style="margin-top:10px;display:flex;gap:4px">';
+    html += '<button class="btn btn-sm btn-b" onclick="editInbound(\'' + ib.inbound_id + '\')">ویرایش</button>';
+    html += '<button class="btn btn-sm btn-r" onclick="deleteInbound(\'' + ib.inbound_id + '\')">حذف</button>';
+    html += '</div></div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function populateInboundSelects() {
+  var opts = '<option value="">-- پیش‌فرض --</option>' + ALL_IB.map(function(ib) {
+    return '<option value="' + ib.inbound_id + '" data-proto="' + (ib.protocol||'') + '">' + esc(ib.name) + ' (' + (ib.protocol||'vless').toUpperCase() + ')</option>';
+  }).join('');
+  var sel = $id('cu-inbound');
+  if (sel) sel.innerHTML = opts;
+}
+
+function openCreateInbound() {
+  $id('ib-title').textContent = 'ایجاد اینباند جدید';
+  $id('ib-id').value = '';
+  $id('ib-name').value = '';
+  $id('ib-proto').value = 'vless';
+  $id('ib-port').value = '';
+  $id('ib-ext-port').value = '';
+  $id('ib-domain').value = '';
+  $id('ib-sni').value = '';
+  $id('ib-network').value = 'ws';
+  $id('ib-security').value = 'tls';
+  $id('ib-fingerprint').value = 'chrome';
+  $id('ib-submit').textContent = 'ایجاد اینباند';
+  onInboundProtoChange();
+  openModal('mod-inbound');
+}
+
+function editInbound(iid) {
+  var ib = ALL_IB.find(function(x) { return x.inbound_id === iid; });
+  if (!ib) return;
+  $id('ib-title').textContent = 'ویرایش اینباند';
+  $id('ib-id').value = iid;
+  $id('ib-name').value = ib.name || '';
+  $id('ib-proto').value = ib.protocol || 'vless';
+  $id('ib-port').value = ib.port || '';
+  $id('ib-ext-port').value = ib.external_port || '';
+  $id('ib-domain').value = ib.domain || '';
+  $id('ib-sni').value = ib.sni || '';
+  $id('ib-network').value = ib.network || 'ws';
+  $id('ib-security').value = ib.security || 'tls';
+  $id('ib-fingerprint').value = ib.fingerprint || 'chrome';
+  $id('ib-submit').textContent = 'بروزرسانی اینباند';
+  onInboundProtoChange();
+  openModal('mod-inbound');
+}
+
+function onInboundProtoChange() {
+  var p = $id('ib-proto').value;
+  var secWrap = $id('ib-sec-wrap');
+  if (p === 'vless' || p === 'vmess' || p === 'trojan') {
+    secWrap.classList.remove('hidden');
+    $id('ib-security').value = 'tls';
+  } else {
+    secWrap.classList.add('hidden');
+  }
+  onSecurityChange();
+}
+
+function onSecurityChange() {
+  var sec = $id('ib-security').value;
+  var tlsF = $id('ib-tls-fields'), realF = $id('ib-reality-fields');
+  if (sec === 'reality') { tlsF.classList.add('hidden'); realF.classList.remove('hidden'); }
+  else if (sec === 'tls') { tlsF.classList.remove('hidden'); realF.classList.add('hidden'); }
+  else { tlsF.classList.add('hidden'); realF.classList.add('hidden'); }
+}
+
+function onNetworkChange() {
+  var net = $id('ib-network').value;
+  toggleById('ib-ws-fields', net === 'ws');
+  toggleById('ib-xhttp-fields', net === 'xhttp');
+  toggleById('ib-grpc-fields', net === 'grpc');
+}
+
+function toggleById(id, show) { var el = $id(id); if (el) { if (show) el.classList.remove('hidden'); else el.classList.add('hidden'); } }
+
+function onDomainChange() {
+  var d = $id('ib-domain').value;
+  if (d) $id('ib-sni').value = d;
+}
+
+async function generateRealityKeysUI() {
+  try {
+    var r = await api('/api/tools/generate-reality-keys', {method: 'POST'});
+    $id('ib-privkey').value = r.private_key || '';
+    $id('ib-pubkey').value = r.public_key || '';
+    toast('کلیدهای Reality تولید شد', 'ok');
+  } catch(e) { toast('خطا در تولید کلید', 'err'); }
+}
+
+async function generateShortId() {
+  var iid = $id('ib-id').value;
+  if (!iid) {
+    // Creating new inbound — generate locally
+    var hex = ''; for(var i=0;i<10;i++) hex += '0123456789abcdef'[Math.floor(Math.random()*16)];
+    $id('ib-shortids').value = hex;
+    toast('Short ID تولید شد', 'ok');
+    return;
+  }
+  // Editing existing — call API
+  try {
+    var r = await api('/api/inbounds/' + iid + '/generate-short-id', {method: 'POST'});
+    $id('ib-shortids').value = r.short_id || '';
+    toast('Short ID جدید تولید شد', 'ok');
+  } catch(e) { toast('خطا', 'err'); }
+}
+
+function openCreateInbound() {
+  $id('ib-title').textContent = 'ایجاد اینباند جدید';
+  $id('ib-id').value = '';
+  $id('ib-name').value = '';
+  $id('ib-port').value = '';
+  $id('ib-ext-port').value = '';
+  $id('ib-domain').value = '';
+  $id('ib-sni').value = '';
+  $id('ib-extdomain').value = '';
+  $id('ib-extport').value = '';
+  $id('ib-privkey').value = '';
+  $id('ib-pubkey').value = '';
+  $id('ib-shortids').value = '';
+  $id('ib-spiderx').value = '/';
+  $id('ib-extdomain').value = '';
+  $id('ib-extport').value = '443';
+  $id('ib-dest').value = 'is1-ssl.mzstatic.com:443';
+  $id('ib-servernames').value = 'is1-ssl.mzstatic.com';
+  $id('ib-proto').value = 'vless';
+  $id('ib-security').value = 'tls';
+  $id('ib-network').value = 'tcp';
+  $id('ib-fingerprint').value = 'chrome';
+  $id('ib-wspath').value = '/';
+  $id('ib-xhttppath').value = '/';
+  $id('ib-xhttp-mode').value = 'auto';
+  $id('ib-grpc-svc').value = 'grpc';
+  $id('ib-submit').textContent = 'ایجاد اینباند';
+  onInboundProtoChange();
+  onNetworkChange();
+  openModal('mod-inbound');
+}
+
+function editInbound(iid) {
+  var ib = ALL_IB.find(function(x) { return x.inbound_id === iid; });
+  if (!ib) return;
+  $id('ib-title').textContent = 'ویرایش اینباند';
+  $id('ib-id').value = iid;
+  $id('ib-name').value = ib.name || '';
+  $id('ib-port').value = ib.port || '';
+  $id('ib-ext-port').value = ib.external_port || '';
+  $id('ib-domain').value = ib.domain || '';
+  $id('ib-sni').value = ib.sni || '';
+  $id('ib-proto').value = ib.protocol || 'vless';
+  $id('ib-security').value = ib.security || 'tls';
+  $id('ib-network').value = ib.network || 'tcp';
+  $id('ib-fingerprint').value = ib.fingerprint || 'chrome';
+  var rs = ib.reality_settings || {};
+  $id('ib-privkey').value = (rs || {}).private_key || ib.private_key || '';
+  $id('ib-pubkey').value = (rs || {}).public_key || ib.public_key || '';
+  $id('ib-shortids').value = (rs || {}).short_ids || '';
+  $id('ib-spiderx').value = (rs || {}).spiderx || '/';
+  $id('ib-extdomain').value = ib.external_domain || '';
+  $id('ib-extport').value = ib.external_port || '443';
+  $id('ib-dest').value = (rs || {}).dest || 'is1-ssl.mzstatic.com:443';
+  $id('ib-servernames').value = (rs || {}).server_names || (rs || {}).sni || 'is1-ssl.mzstatic.com';
+  var ws = ib.ws_settings || {}; var xh = ib.xhttp_settings || {};
+  $id('ib-wspath').value = ws.path || '/';
+  $id('ib-xhttppath').value = xh.path || '/';
+  $id('ib-xhttp-mode').value = xh.mode || 'auto';
+  $id('ib-grpc-svc').value = (ib.grpc_settings || {}).serviceName || 'grpc';
+  $id('ib-submit').textContent = 'بروزرسانی اینباند';
+  onInboundProtoChange();
+  onNetworkChange();
+  openModal('mod-inbound');
+}
+
+async function submitInbound(e) {
+  e.preventDefault();
+  var btn = $id('ib-submit'); btn.disabled = true;
+  btn.textContent = 'در حال ذخیره...';
+  var iid = $id('ib-id').value;
+  var proto = $id('ib-proto').value;
+  var network = $id('ib-network').value;
+  var security = $id('ib-security').value;
+  var domain = $id('ib-domain').value;
+  var sni = $id('ib-sni').value || domain;
+  var fp = $id('ib-fingerprint').value || 'chrome';
+
+  var body = {
+    name: $id('ib-name').value,
+    protocol: proto,
+    port: parseInt($id('ib-port').value) || 0,
+    external_port: parseInt($id('ib-extport').value) || null,
+    external_domain: $id('ib-extdomain').value || '',
+    network: network,
+    security: security,
+    domain: domain,
+    sni: sni,
+    fingerprint: fp
+  };
+
+  // Reality settings
+  if (security === 'reality') {
+    body.reality_settings = {
+      private_key: $id('ib-privkey').value || '',
+      public_key: $id('ib-pubkey').value || '',
+      dest: $id('ib-dest').value || 'is1-ssl.mzstatic.com:443',
+      server_names: ($id('ib-servernames').value || '').split(',').map(function(s){return s.trim()}).filter(Boolean),
+      short_ids: $id('ib-shortids').value || '',
+      spiderx: $id('ib-spiderx').value || '/',
+      fingerprint: fp
+    };
+  }
+
+  // Network settings
+  if (network === 'ws') {
+    body.ws_settings = { path: $id('ib-wspath').value || '/' };
+  } else if (network === 'xhttp') {
+    body.xhttp_settings = {
+      path: $id('ib-xhttppath').value || '/',
+      mode: $id('ib-xhttp-mode').value || 'auto'
+    };
+  } else if (network === 'grpc') {
+    body.grpc_settings = { serviceName: $id('ib-grpc-svc').value || 'grpc' };
+  }
+
+  try {
+    var url = '/api/inbounds' + (iid ? '/' + iid : '');
+    await api(url, {method: iid ? 'PATCH' : 'POST', body: body});
+    toast(iid ? 'اینباند بروزرسانی شد' : 'اینباند ایجاد شد', 'ok');
+    closeModal('mod-inbound');
+    loadInbounds();
+  } catch(e) { toast(e.message || 'خطا', 'err'); }
+  btn.disabled = false; btn.textContent = iid ? 'بروزرسانی اینباند' : 'ایجاد اینباند';
+}
+
+async function deleteInbound(iid) {
+  if (!confirm('آیا از حذف این اینباند اطمینان دارید؟')) return;
+  try { await api('/api/inbounds/' + iid, {method: 'DELETE'}); toast('اینباند حذف شد', 'ok'); loadInbounds(); } catch(e) { toast(e.message, 'err'); }
+}
+
+// ─── Spider IP Scanner (Real CF Scanner) ───
+var globalActiveIps=[];
+var lastCfgContent='';
+var currentCfgTab='vless';
+var chartVisible=false;
+const networkDatabase={all:[[172,64,0,0,13],[104,16,0,0,12],[162,159,0,0,16],[108,162,192,0,18]],mci:[[104,16,24,0,14],[172,67,10,0,15],[162,159,36,0,16]],mtn:[[108,162,192,0,18],[104,18,45,0,14],[172,64,50,0,14]],ict:[[104,16,0,0,12],[162,159,0,0,16]]};
+function makeOperatorIp(type){var rangelist=networkDatabase[type]||networkDatabase['all'];var range=rangelist[Math.floor(Math.random()*rangelist.length)];var segments=[range[0],range[1],range[2],range[3]];if(range[4]===12){segments[1]+=Math.floor(Math.random()*16);segments[2]=Math.floor(Math.random()*256)}else if(range[4]===13){segments[1]+=Math.floor(Math.random()*8);segments[2]=Math.floor(Math.random()*256)}else if(range[4]===14){segments[2]+=Math.floor(Math.random()*4)}else if(range[4]===15){segments[2]+=Math.floor(Math.random()*2)}else if(range[4]===16){segments[2]=Math.floor(Math.random()*256)}segments[3]=Math.floor(Math.random()*253)+2;return segments.join('.')}
+function checkIpPing(ip){return new Promise(function(resolve){var start=Date.now();var img=new Image();var timeoutId=setTimeout(function(){img.src='';resolve(null)},1000);img.onload=img.onerror=function(){clearTimeout(timeoutId);var pingTime=Date.now()-start;if(pingTime<900){resolve({ping:pingTime})}else{resolve(null)}};img.src='http://'+ip+'/__ping?t='+Math.random()})}
+
+function loadSpiderIP(){}
+
+async function runScanner(){
+  var startBtn=$id('startBtn'),statusTxt=$id('scanStatus'),counterTxt=$id('scanCount');
+  var barFill=$id('scanBar'),ipList=$id('ipList'),resultsArea=$id('scanResults');
+  var progressArea=$id('scanProgress'),neededCount=parseInt($id('ipCount').value)||6;
+  var targetOp=$id('operatorSelect').value;
+  startBtn.disabled=true;ipList.innerHTML='';resultsArea.style.display='none';
+  progressArea.style.display='block';globalActiveIps=[];
+  var loops=0;
+  while(globalActiveIps.length<neededCount&&loops<neededCount*50){
+    loops++;
+    var currentIp=makeOperatorIp(targetOp);
+    statusTxt.textContent='در حال آنالیز شبکه...';
+    var result=await checkIpPing(currentIp);
+    if(result!==null){
+      globalActiveIps.push({ip:currentIp,ping:result.ping});
+      var percent=Math.floor((globalActiveIps.length/neededCount)*100);
+      barFill.style.width=percent+'%';counterTxt.textContent=globalActiveIps.length+' / '+neededCount;
+    }
+  }
+  globalActiveIps.sort(function(a,b){return a.ping-b.ping});
+  progressArea.style.display='none';resultsArea.style.display='block';
+  var portsToUse=getSelectedPorts();
+  globalActiveIps.forEach(function(item,index){
+    var row=document.createElement('div');row.className='ip-row';
+    row.innerHTML='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="ip-addr">'+item.ip+'</span><span style="color:var(--neon);font-family:monospace;font-size:11px">:'+portsToUse.join(',:')+'</span></div><div class="ip-actions"><span class="ip-ping-val">'+item.ping+' ms</span><button class="btn btn-sm btn-b" onclick="copySingleIp(\''+item.ip+'\')">کپی</button></div>';
+    ipList.appendChild(row);
+  });
+  startBtn.disabled=false;
+}
+
+function getSelectedPorts(){
+  var allPorts=[{id:'port443',num:443},{id:'port853',num:853},{id:'port2053',num:2053},{id:'port2083',num:2083}];
+  var sel=allPorts.filter(function(p){var el=$id(p.id);return el&&el.checked}).map(function(p){return p.num});
+  return sel.length>0?sel:[443];
+}
+
+function copySingleIp(ip){copyToClipboard(ip,'آی‌پی کپی شد')}
+function copyToClipboard(text,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){toast(msg,'ok')}).catch(function(){})}
+  else{var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.top='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg,'ok')}catch(e){toast('کپی ناموفق','err')}document.body.removeChild(ta)}
+}
+
+function copyAllIpsOnly(){
+  if(!globalActiveIps.length){toast('آی‌پی یافت نشد','err');return}
+  copyToClipboard(globalActiveIps.map(function(i){return i.ip}).join('\\n'),'تمامی آی‌پی‌ها کپی شد');
+}
+
+function applyPingFilter(val){
+  $id('pingFilterVal').textContent=val>=900?'همه':val+' ms';
+  var rows=document.querySelectorAll('#ipList .ip-row');
+  rows.forEach(function(row){
+    var pingEl=row.querySelector('.ip-ping-val');
+    if(!pingEl)return;
+    var ping=parseInt(pingEl.textContent);
+    row.style.display=(val>=900||ping<=parseInt(val))?'':'none';
+  });
+}
+
+function toggleChart(){
+  chartVisible=!chartVisible;
+  $id('chartWrap').style.display=chartVisible?'block':'none';
+  if(chartVisible)renderChart();
+}
+
+function renderChart(){
+  var bars=$id('chartBars');bars.innerHTML='';
+  if(!globalActiveIps.length){bars.innerHTML='<span style="font-size:12px;color:var(--txt2)">ابتدا اسکن اجرا کنید</span>';return}
+  var maxPing=Math.max.apply(null,globalActiveIps.map(function(i){return i.ping}));
+  globalActiveIps.forEach(function(item){
+    var pct=Math.max(10,Math.round((item.ping/maxPing)*100));
+    var wrap=document.createElement('div');wrap.className='chart-bar-wrap';
+    wrap.innerHTML='<div class="chart-ms">'+item.ping+'</div><div class="chart-bar" style="height:'+pct+'%"></div><div class="chart-label">'+item.ip.split('.').slice(2).join('.')+'</div>';
+    bars.appendChild(wrap);
+  });
+}
+
+// Export
+function exportFormat(type){
+  if(!globalActiveIps.length){toast('ابتدا اسکن اجرا کنید','err');return}
+  var ports=getSelectedPorts(),content='',filename='ips.txt';
+  if(type==='ipport'){
+    var lines=[];globalActiveIps.forEach(function(item){ports.forEach(function(p){lines.push(item.ip+':'+p)})});
+    content=lines.join('\\n');copyToClipboard(content,'IP:Port کپی شد');return;
+  }
+  if(type==='clash'){
+    var pLines=[];globalActiveIps.forEach(function(item,i){ports.forEach(function(p){
+      pLines.push('  - name: CF-'+(i+1)+'-'+p+'\\n    type: vmess\\n    server: '+item.ip+'\\n    port: '+p+'\\n    uuid: 00000000-0000-0000-0000-000000000000\\n    alterId: 0\\n    cipher: auto\\n    tls: true\\n    network: ws\\n    ws-path: /')})});
+    var names=[];globalActiveIps.forEach(function(item,i){ports.forEach(function(p){names.push('CF-'+(i+1)+'-'+p)})});
+    content='proxies:\\n'+pLines.join('\\n')+'\\n\\nproxy-groups:\\n  - name: Cloudflare\\n    type: url-test\\n    proxies:\\n      - '+names.join('\\n      - ')+'\\n    url: http://www.gstatic.com/generate_204\\n    interval: 300\\n\\nrules:\\n  - MATCH,Cloudflare';
+    filename='clash-config.yaml';
+  }
+  if(type==='v2ray'){
+    var outbounds=[];globalActiveIps.forEach(function(item,i){ports.forEach(function(p){
+      outbounds.push({tag:'cf-'+(i+1)+'-'+p,protocol:'vmess',settings:{vnext:[{address:item.ip,port:p,users:[{id:'00000000-0000-0000-0000-000000000000',alterId:0}]}]},streamSettings:{network:'ws',security:'tls',tlsSettings:{serverName:'cloudflare.com'},wsSettings:{path:'/'}}})})});
+    content=JSON.stringify({log:{loglevel:'warning'},inbounds:[{port:1080,protocol:'socks'}],outbounds:outbounds},null,2);
+    filename='v2ray-config.json';
+  }
+  var blob=new Blob([content],{type:'text/plain'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
+}
+
+// Config Builder
+function setCfgTab(tab,el){currentCfgTab=tab;document.querySelectorAll('.cfg-tab').forEach(function(t){t.classList.remove('active')});el.classList.add('active');var out=$id('cfgOutput');if(out)out.style.display='none'}
+function genUUID(){var u='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16)});$id('cfgUUID').value=u}
+function importFromScanner(){if(!globalActiveIps.length){toast('ابتدا اسکن اجرا کنید','err');return}var ports=getSelectedPorts();var lines=[];globalActiveIps.forEach(function(item){ports.forEach(function(p){lines.push(item.ip+':'+p)})});$id('cfgIPs').value=lines.join('\\n')}
+function buildConfig(){
+  var uuid=$id('cfgUUID').value||'00000000-0000-0000-0000-000000000000';
+  var sni=$id('cfgSNI').value||'cloudflare.com';
+  var security=$id('cfgSecurity').value,network=$id('cfgNetwork').value;
+  var wsPath=$id('cfgPath').value||'/';
+  var rawIPs=$id('cfgIPs').value.trim();
+  if(!rawIPs){toast('حداقل یک آی‌پی وارد کنید','err');return}
+  var entries=rawIPs.split('\\n').map(function(l){var t=l.trim(),parts=t.split(':');return{ip:parts[0],port:parseInt(parts[1])||443}}).filter(function(e){return e.ip});
+  var output='',outEl=$id('cfgOutput'),preEl=$id('cfgPre'),label=$id('cfgOutLabel');
+  if(currentCfgTab==='vless'){
+    var links=entries.map(function(e,i){return 'vless://'+uuid+'@'+e.ip+':'+e.port+'?encryption=none&security='+security+'&sni='+sni+'&type='+network+'&path='+encodeURIComponent(wsPath)+'#CF-'+(i+1)+'-'+e.ip});
+    output=links.join('\\n');label.textContent=iconCheck+' '+links.length+' VLESS links built';preEl.dataset.filename='vless-configs.txt';
+  }else if(currentCfgTab==='vmess'){
+    var links=entries.map(function(e,i){var obj={v:'2',ps:'CF-'+(i+1),add:e.ip,port:String(e.port),id:uuid,aid:'0',scy:'auto',net:network,type:'none',host:sni,path:wsPath,tls:security,sni:sni};return 'vmess://'+btoa(unescape(encodeURIComponent(JSON.stringify(obj))))});
+    output=links.join('\\n');label.textContent=iconCheck+' '+links.length+' VMess links built';preEl.dataset.filename='vmess-configs.txt';
+  }else if(currentCfgTab==='clash'){
+    var pLines=entries.map(function(e,i){return '  - name: CF-'+(i+1)+'\\n    type: vless\\n    server: '+e.ip+'\\n    port: '+e.port+'\\n    uuid: '+uuid+'\\n    tls: '+(security==='tls'?'true':'false')+'\\n    servername: '+sni+'\\n    network: '+network+'\\n    ws-opts:\\n      path: '+wsPath+'\\n      headers:\\n        Host: '+sni});
+    var names=entries.map(function(e,i){return 'CF-'+(i+1)});
+    output='proxies:\\n'+pLines.join('\\n')+'\\n\\nproxy-groups:\\n  - name: iconRefresh+" Auto"\\n    type: url-test\\n    proxies:\\n      - '+names.join('\\n      - ')+'\\n    url: http://www.gstatic.com/generate_204\\n    interval: 300\\n\\nrules:\\n  - GEOIP,IR,DIRECT\\n  - MATCH,iconRefresh+" Auto"';
+    label.textContent=iconCheck+' Clash YAML with '+entries.length+' proxies';preEl.dataset.filename='clash-config.yaml';
+  }else if(currentCfgTab==='singbox'){
+    var outbounds=entries.map(function(e,i){return {type:'vless',tag:'cf-'+(i+1),server:e.ip,server_port:e.port,uuid:uuid,tls:{enabled:security==='tls',server_name:sni},transport:{type:network,path:wsPath}}});
+    var tags=outbounds.map(function(o){return o.tag});
+    output=JSON.stringify({inbounds:[{type:'socks',tag:'socks-in',listen:'127.0.0.1',listen_port:2080}],outbounds:outbounds.concat([{type:'urltest',tag:'auto',outbounds:tags,url:'http://www.gstatic.com/generate_204',interval:'5m'}])},null,2);
+    label.textContent=iconCheck+' Sing-Box with '+entries.length+' connections';preEl.dataset.filename='singbox-config.json';
+  }
+  lastCfgContent=output;preEl.textContent=output;outEl.style.display='block';outEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function copyCfg(){copyToClipboard(lastCfgContent,'کانفیگ کپی شد')}
+function downloadCfg(){var filename=$id('cfgPre').dataset.filename||'config.txt';var blob=new Blob([lastCfgContent],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click()}
+
+// ─── Settings ───
+function loadSettings() {
+  // Already handled by theme pickers in HTML
+}
+
+async function changePassword(e) {
+  e.preventDefault();
+  try {
+    await api('/api/change-password', {method: 'POST', body: {
+      current_password: $id('cp-old').value,
+      new_password: $id('cp-new').value
+    }});
+    toast('رمز عبور تغییر کرد', 'ok');
+    $id('cp-old').value = ''; $id('cp-new').value = '';
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+async function saveDomainSettings(e) {
+  e.preventDefault();
+  try {
+    await api('/api/tools/settings', {method: 'POST', body: {
+      domain: $id('set-domain').value
+    }});
+    toast('تنظیمات دامنه ذخیره شد', 'ok');
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+// ─── Modal ───
+function openModal(id) { $id(id).classList.add('show'); }
+function closeModal(id) { $id(id).classList.remove('show'); }
+
+// ─── Helpers ───
+function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtBytes(b) {
+  if (!b || b === 0) return '۰ B';
+  var u = ['B','KB','MB','GB','TB'], i = 0;
+  while (b >= 1024 && i < 4) { b /= 1024; i++; }
+  return b.toFixed(i === 0 ? 0 : 1) + ' ' + u[i];
+}
+function fmtUptime(s) {
+  if (!s) return '۰s';
+  var d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
+  return (d ? d + 'd ' : '') + h + 'h ' + m + 'm';
+}
+
+// ─── SVG Icons ───
+var iconUsers = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8z"/><circle cx="17" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg>';
+var iconTraffic = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>';
+var iconConn = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>';
+var iconUptime = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+var iconCfg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>';
+var iconLink = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>';
+var iconQr = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="18" y1="14" x2="18" y2="14.01"/><line x1="21" y1="14" x2="21" y2="14.01"/><line x1="14" y1="17" x2="14" y2="17.01"/><line x1="16" y1="17" x2="16" y2="21"/><line x1="14" y1="21" x2="21" y2="21"/></svg>';
+var iconEdit = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+var iconToggle = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>';
+var iconTrash = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
+var iconCheck = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+var iconRefresh = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>';
+
+// --- Neon Server Resource Bars ---
+var rwScannedRegions = [];
+function updateNeonBars(){
+  api('/api/server/resources').then(function(d){
+    if(d.error) return;
+    $id('cpu-val').textContent = d.cpu_percent.toFixed(0)+'% / '+d.cpu_count+' cores';
+    $id('cpu-bar').style.width = d.cpu_percent+'%';
+    $id('ram-val').textContent = d.ram_used_gb.toFixed(1)+' / '+d.ram_total_gb.toFixed(1)+' GB';
+    $id('ram-bar').style.width = d.ram_percent+'%';
+    $id('disk-val').textContent = d.disk_percent.toFixed(0)+'% / '+d.disk_total_gb.toFixed(0)+' GB';
+    $id('disk-bar').style.width = d.disk_percent+'%';
+    $id('net-sent').textContent = d.net_sent_mb.toFixed(0)+' MB';
+    $id('net-recv').textContent = d.net_recv_mb.toFixed(0)+' MB';
+    $id('sys-uptime').textContent = fmtUptime(d.uptime_seconds);
+  }).catch(function(){});
+  setTimeout(updateNeonBars, 3000);
+}
+
+// --- Railway IP Scanner ---
+async function scanRailwayRegions(){
+  var prog=$id('rwProgress'),bar=$id('rwBar'),st=$id('rwStatus'),cnt=$id('rwCount'),res=$id('rwResults'),list=$id('rwIpList');
+  prog.style.display='block';res.style.display='none';list.innerHTML='';
+  st.textContent='Scanning Railway regions...';cnt.textContent='0/10';
+  try{
+    var d=await api('/api/tools/scan-railway-ips');
+    var regions=d.regions||[];var worked=regions.filter(function(r){return r.latency_ms!=null});
+    rwScannedRegions=regions.sort(function(a,b){return (a.latency_ms||9999)-(b.latency_ms||9999)});
+    bar.style.width='100%';cnt.textContent=regions.length+'/'+regions.length;
+    st.textContent='Done: '+worked.length+' reachable';
+    list.innerHTML=rwScannedRegions.map(function(r){
+      var c=r.status==='ok'?'#00e676':r.status==='slow'?'#ffab00':'#ef4444';
+      var latTxt=r.latency_ms!=null?r.latency_ms.toFixed(1)+' ms':'unreachable';
+      return '<div class="cfg" style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;flex-wrap:wrap;gap:8px">'+
+        '<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600">'+esc(r.region)+'</span><span style="font-size:9px;color:var(--txt2);font-family:monospace">'+esc(r.host||'')+'</span></div>'+
+        '<div style="display:flex;align-items:center;gap:8px"><span style="font-family:monospace;font-size:13px;font-weight:700;color:'+c+'">'+latTxt+'</span>'+
+        '<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:'+c+'20;color:'+c+';border:1px solid '+c+'40">'+r.status+'</span></div></div>';
+    }).join('');
+    res.style.display='block';
+  }catch(e){st.textContent='Error: '+e.message}
+  prog.style.display='none';
+}
+
+async function getServerIP(){
+  var st=$id('rwStatus'),prog=$id('rwProgress'),list=$id('rwIpList'),res=$id('rwResults'),bar=$id('rwBar');
+  st.style.display='block';st.textContent='Getting server IP...';prog.style.display='block';bar.style.width='50%';
+  try{
+    var d=await api('/api/tools/my-ip');
+    var html='<div style="background:rgba(0,0,0,.2);border-radius:8px;padding:12px;font-family:monospace;font-size:11px">';
+    for(var k in d.ips){if(d.ips[k]){html+='<div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--txt2)">'+esc(k)+'</span><span style="color:var(--neon);font-weight:700">'+esc(d.ips[k])+'</span></div>'}}
+    html+='</div>';list.innerHTML=html;bar.style.width='100%';st.textContent='IP loaded';
+    res.style.display='block';
+  }catch(e){st.textContent='Error: '+e.message}
+  prog.style.display='none';
+}
+
+// --- Config Builder ---
+function genCfgUUID(){var u='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16)});$id('cfgUUID').value=u}
+var rwBuiltConfigs=[];
+function rwBuildConfig(){
+  var uuid=$id('cfgUUID').value;if(!uuid){genCfgUUID();uuid=$id('cfgUUID').value}
+  var sni=$id('cfgSNI').value||'speedtest.net',sec=$id('cfgSec').value,net=$id('cfgNet').value,path=$id('cfgPath').value||'/';
+  var ips=$id('cfgIPs').value.split('\n').filter(function(l){return l.trim()});
+  if(!ips.length){toast('Enter IPs','err');return}
+  rwBuiltConfigs=ips.map(function(line){var parts=line.trim().split(':');var ip=parts[0],port=parts[1]||'443';
+    var params='encryption=none&security='+sec+'&type='+net+'&host='+encodeURIComponent(sni)+'&path='+encodeURIComponent(path)+'&sni='+encodeURIComponent(sni)+'&fp=chrome&alpn='+(net==='tcp'?'h2,http/1.1':'http/1.1');
+    return 'vless://'+uuid+'@'+ip+':'+port+'?'+params+'#'+encodeURIComponent(sni);
+  });
+  $id('cfgPre').textContent=rwBuiltConfigs.join('\n\n');
+  $id('cfgOutLabel').textContent=rwBuiltConfigs.length+' configs built';
+  $id('cfgOutput').style.display='block';
+}
+function rwCopyCfg(){var t=rwBuiltConfigs.join('\n\n');if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){toast('Copied!','ok')});else toast('Copy failed','err')}
+function rwDownloadCfg(){var t=rwBuiltConfigs.join('\n\n');var b=new Blob([t],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='spider-configs.txt';a.click()}
+
+// --- Panel Audio (auto-play from static folder) ---
+function togglePanelAudio(){var p=$id('panel-audio-player');if($id('audio-autoplay').checked){p.play().catch(function(){})}else{p.pause()};localStorage.setItem('spider_audio', $id('audio-autoplay').checked?'1':'0')}
+(function initPanelAudio(){var p=$id('panel-audio-player');p.src='/static/music-panel.mp3';p.volume=0.3;var saved=localStorage.getItem('spider_audio');$id('audio-autoplay').checked=saved!=='0';if(saved!=='0'){p.play().catch(function(){})}})();
+
+// Start neon bars when tab opens
+setTimeout(updateNeonBars, 500);
+
+</script>
+</body>
+</html>

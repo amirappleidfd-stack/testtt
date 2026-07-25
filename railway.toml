@@ -1,0 +1,37 @@
+# Railway configuration for unified Spider Panel + Telegram Bot
+# This runs both the FastAPI web panel and the Telegram bot in a single container
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# Health check endpoint
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+# Runtime
+startCommand = "python main.py"
+
+[env]
+# App configuration
+PYTHONUNBUFFERED = "1"
+PYTHONDONTWRITEBYTECODE = "1"
+
+# These should be set in Railway dashboard as environment variables:
+# PORT = "8000"  (Railway sets this automatically)
+# SECRET_KEY = "your-secure-random-key-here"
+# DATABASE_URL = ""  (optional - if using external DB)
+# TELEGRAM_BOT_TOKEN = ""  (optional - can be set via panel UI)
+# TELEGRAM_WEBHOOK_URL = ""  (optional - set after first deploy)
+
+# Default values (can be overridden)
+LOG_LEVEL = "info"
+
+# State persistence (Railway volume mount point)
+STATE_DIR = "/app/state"
+
+# Upload directory for audio files
+UPLOAD_DIR = "/app/static/uploads"
